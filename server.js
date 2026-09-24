@@ -1,22 +1,20 @@
 import express from 'express';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { join } from 'path';
 
 const app = express();
 
-// Serve static files
-app.use(express.static(__dirname));
+const ROOT = process.cwd();
 
-// SPA fallback only for routes, not files
+// Serve all static files from project root
+app.use(express.static(ROOT));
+
+// SPA fallback only for actual page routes
 app.get('*', (req, res) => {
   if (req.path.includes('.')) {
     return res.status(404).send('File not found');
   }
 
-  res.sendFile(join(__dirname, 'index.html'));
+  res.sendFile(join(ROOT, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;

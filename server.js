@@ -10,10 +10,8 @@ const app = express();
 // Serve static files
 app.use(express.static(__dirname));
 
-// Only send index.html for page routes
+// SPA fallback only for routes, not files
 app.get('*', (req, res) => {
-  const requestedPath = join(__dirname, req.path);
-
   if (req.path.includes('.')) {
     return res.status(404).send('File not found');
   }

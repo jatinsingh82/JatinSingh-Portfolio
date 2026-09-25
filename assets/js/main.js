@@ -135,24 +135,62 @@
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const navMenu = document.getElementById('nav-menu');
 
+  function openMobileMenu() {
+    if (!mobileMenuBtn || !navMenu) return;
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    navMenu.classList.add('open');
+    document.body.classList.add('mobile-nav-open');
+    document.body.style.overflow = 'hidden';
+    mobileMenuBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    `;
+    mobileMenuBtn.setAttribute('aria-label', 'Close navigation menu');
+  }
+
+  function closeMobileMenu() {
+    if (!mobileMenuBtn || !navMenu) return;
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    navMenu.classList.remove('open');
+    document.body.classList.remove('mobile-nav-open');
+    document.body.style.overflow = '';
+    mobileMenuBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="4" x2="20" y1="12" y2="12"></line>
+        <line x1="4" x2="20" y1="6" y2="6"></line>
+        <line x1="4" x2="20" y1="18" y2="18"></line>
+      </svg>
+    `;
+    mobileMenuBtn.setAttribute('aria-label', 'Toggle navigation menu');
+  }
+
   if (mobileMenuBtn && navMenu) {
     mobileMenuBtn.addEventListener('click', () => {
       const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
-      mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
-      navMenu.classList.toggle('open');
+      if (isExpanded) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
     });
 
     navMenu.querySelectorAll('.nav-link').forEach((link) => {
       link.addEventListener('click', () => {
-        navMenu.classList.remove('open');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        closeMobileMenu();
       });
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && navMenu.classList.contains('open')) {
-        navMenu.classList.remove('open');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        closeMobileMenu();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && navMenu.classList.contains('open')) {
+        closeMobileMenu();
       }
     });
   }
@@ -867,10 +905,9 @@ Highlights: NIST CSF, ISO 27001, IAM, Vulnerability Assessment, Java, C++, JavaS
         break;
       case 'projects':
         response = `Verified Projects:
-  1. Rajdeep Enterprises Digital Platform (Commercial Web & Architecture)
-  2. Weather Intelligence Telemetry (Asynchronous API Resilience)
-  3. Privacy-Aware Geolocation Tracker (HTML5 Sensor Privacy)
-  4. Algorithmic Problem Solving & Data Structures (Computational Rigor)`;
+  1. Rajdeep Enterprises Digital Platform (Commercial Web Platform)
+  2. Job Portal Application (Full-Stack MERN Architecture)
+  3. Weather Website (Real-time Meteorological Web Platform)`;
         break;
       case 'education':
         response = `Degree: B.Tech in Computer Science & Engineering

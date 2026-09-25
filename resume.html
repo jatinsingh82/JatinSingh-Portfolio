@@ -3,246 +3,367 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume — Jatin Singh | Cybersecurity Analyst</title>
+  <title>Resume — Jatin Singh | Computer Science & DevOps</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --text-dark: #0f172a;
+      --text-secondary: #334155;
       --text-muted: #475569;
       --accent: #4338ca;
+      --accent-light: #6366f1;
       --border: #cbd5e1;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-dark);
-      background: #f8fafc;
-      line-height: 1.55;
-      padding: 40px 20px;
+      background: #f1f5f9;
+      line-height: 1.5;
+      padding: 36px 16px;
+    }
+    .actions-bar {
+      max-width: 820px;
+      margin: 0 auto 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .btn-print {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s ease;
+    }
+    .btn-print:hover {
+      background: #3730a3;
     }
     .resume-sheet {
       max-width: 820px;
       margin: 0 auto;
       background: #ffffff;
-      padding: 50px 60px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 44px 50px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
       border: 1px solid var(--border);
     }
     .header {
       border-bottom: 2px solid var(--accent);
-      padding-bottom: 20px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 16px;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      text-align: center;
     }
-    .name-block h1 {
+    .name-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
+      letter-spacing: 0.5px;
       color: var(--text-dark);
-      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
     }
-    .name-block h2 {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--accent);
-      margin-top: 4px;
-    }
-    .contact-block {
+    .contact-line {
       font-size: 13px;
       color: var(--text-muted);
-      text-align: right;
-      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 14px;
     }
-    .contact-block a {
+    .contact-line a {
       color: var(--text-dark);
       text-decoration: none;
       font-weight: 500;
     }
-    .section {
-      margin-bottom: 22px;
+    .contact-line a:hover {
+      color: var(--accent);
+      text-decoration: underline;
     }
-    .section-heading {
+    .section {
+      margin-bottom: 18px;
+    }
+    .section-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 13.5px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: var(--accent);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 4px;
-      margin-bottom: 12px;
+      color: var(--text-dark);
+      border-bottom: 1.5px solid #0f172a;
+      padding-bottom: 3px;
+      margin-bottom: 10px;
     }
-    .entry {
-      margin-bottom: 14px;
+    .objective-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      text-align: justify;
     }
-    .entry-header {
+    .item-header {
       display: flex;
       justify-content: space-between;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-    .entry-sub {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    ul {
-      padding-left: 18px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    li {
-      margin-bottom: 4px;
-    }
-    .skills-grid {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 8px 14px;
-      font-size: 13px;
-    }
-    .skill-cat {
+      align-items: baseline;
+      font-size: 13.5px;
       font-weight: 700;
       color: var(--text-dark);
+      margin-bottom: 2px;
+      flex-wrap: wrap;
+      gap: 4px;
     }
-    .skill-list {
-      color: var(--text-muted);
-    }
-    .actions-bar {
-      max-width: 820px;
-      margin: 0 auto 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--accent);
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-size: 14px;
+    .item-date {
+      font-size: 12.5px;
       font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
+      color: var(--text-muted);
+      white-space: nowrap;
     }
+    .item-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    ul.item-bullets {
+      padding-left: 18px;
+      margin-top: 4px;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    ul.item-bullets li {
+      margin-bottom: 3px;
+    }
+    ul.item-bullets li::marker {
+      color: var(--accent);
+    }
+    .skills-block {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .skill-group {
+      margin-bottom: 6px;
+    }
+    .skill-group strong {
+      color: var(--text-dark);
+    }
+    .skill-sub-list {
+      padding-left: 18px;
+      margin-top: 2px;
+    }
+    .simple-list {
+      list-style-type: disc;
+      padding-left: 18px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    .simple-list li {
+      margin-bottom: 3px;
+    }
+
     @media print {
       body { background: #ffffff; padding: 0; }
       .actions-bar { display: none; }
-      .resume-sheet { box-shadow: none; border: none; padding: 0; }
+      .resume-sheet { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+      a { text-decoration: none; color: inherit; }
     }
   </style>
 </head>
 <body>
+
   <div class="actions-bar">
-    <a href="/" style="font-size: 14px; font-weight: 600; color: var(--accent); text-decoration: none;">← Back to Portfolio</a>
-    <button class="btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    <a href="/" class="back-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Back to Portfolio
+    </a>
+    <button class="btn-print" onclick="window.print()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save PDF
+    </button>
   </div>
 
   <main class="resume-sheet">
+    
+    <!-- HEADER -->
     <header class="header">
-      <div class="name-block">
-        <h1>JATIN SINGH</h1>
-        <h2>Cybersecurity Analyst | Cyber Strategy & Transformation</h2>
-      </div>
-      <div class="contact-block">
-        <p>Email: <a href="mailto:jatinthakur8273@gmail.com">jatinthakur8273@gmail.com</a></p>
-        <p>GitHub: <a href="https://github.com/jatinsingh82" target="_blank" rel="noopener">github.com/jatinsingh82</a></p>
-        <p>LinkedIn: <a href="https://linkedin.com/in/jatinsingh82" target="_blank" rel="noopener">linkedin.com/in/jatinsingh82</a></p>
+      <h1 class="name-title">JATIN SINGH</h1>
+      <div class="contact-line">
+        <span>+918273324743</span>
+        <span>|</span>
+        <a href="mailto:jatinthakur8273@gmail.com">jatinthakur8273@gmail.com</a>
+        <span>|</span>
+        <span>LinkedIn: <a href="https://www.linkedin.com/in/jatin-singh-4685b0253" target="_blank" rel="noopener noreferrer">linkedin.com/in/jatin-singh-4685b0253</a></span>
+        <span>|</span>
+        <span>GitHub: <a href="https://github.com/jatinsingh82" target="_blank" rel="noopener noreferrer">github.com/jatinsingh82</a></span>
       </div>
     </header>
 
+    <!-- CAREER OBJECTIVE -->
     <section class="section">
-      <h3 class="section-heading">Professional Summary</h3>
-      <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.6;">
-        Computer Science engineer (B.Tech, GLA University) specializing in enterprise cybersecurity, threat modeling, and cyber strategy transformation. Combines solid systems programming foundation with international governance frameworks (NIST CSF, ISO/IEC 27001) to assist organizations in mitigating complex attack surfaces.
+      <h2 class="section-title">CAREER OBJECTIVE</h2>
+      <p class="objective-text">
+        Motivated Computer Science undergraduate with a strong foundation in cloud computing fundamentals, DevOps basics, and software development. Seeking an entry-level Azure/AWS DevOps Engineer – Analyst role at Deloitte where I can contribute to cloud operations, CI/CD processes, and infrastructure support while continuously learning enterprise cloud and DevOps best practices.
       </p>
     </section>
 
+    <!-- EDUCATION -->
     <section class="section">
-      <h3 class="section-heading">Professional Experience</h3>
-      <div class="entry">
-        <div class="entry-header">
-          <span>Cybersecurity Analyst — Cyber Strategy & Transformation</span>
-          <span>Present</span>
+      <h2 class="section-title">EDUCATION</h2>
+      <div style="margin-bottom: 8px;">
+        <div class="item-header">
+          <span>Bachelor of Technology (B.Tech) – Computer Science Engineering</span>
+          <span class="item-date">May 2026</span>
         </div>
-        <div class="entry-sub">
-          <span>Enterprise Security Practice</span>
-          <span>India</span>
+        <div class="item-sub">GLA University, Mathura</div>
+      </div>
+      <div>
+        <div class="item-header">
+          <span>Intermediate (Class XII)</span>
+          <span class="item-date">May 2022</span>
         </div>
-        <ul>
-          <li>Evaluate client security postures against NIST Cybersecurity Framework (CSF) and ISO/IEC 27001 control domains.</li>
-          <li>Perform threat modeling and architecture assessments to uncover identity, network, and web attack vectors.</li>
-          <li>Develop strategic risk transformation roadmaps reconciling technical vulnerabilities with executive governance priorities.</li>
-          <li>Conduct Identity and Access Management (IAM) reviews enforcing principle of least privilege and zero-trust controls.</li>
+        <div class="item-sub">Kanha Makhan Public School, Mathura</div>
+      </div>
+    </section>
+
+    <!-- INTERNSHIP/ TRAINING EXPERIENCE -->
+    <section class="section">
+      <h2 class="section-title">INTERNSHIP/ TRAINING EXPERIENCE</h2>
+      
+      <div style="margin-bottom: 10px;">
+        <div class="item-header">
+          <span>Zidio Development (Remote)</span>
+          <span class="item-date">Feb 2024 - Mar 2024</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Assisted in developing and testing static and dynamic web pages using HTML, CSS, and JavaScript.</li>
+          <li>Used Git and GitHub for version control, commit tracking, and collaborative code updates.</li>
+          <li>Followed defined development processes and documented changes while working in a remote team environment.</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <div class="item-header">
+          <span>Edu-versity (Remote)</span>
+          <span class="item-date">June 2024 - July 2024</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Assisted in building and maintaining web applications using React, Node.js, and MongoDB.</li>
+          <li>Supported API integration and basic database operations.</li>
+          <li>Gained exposure to application hosting concepts, debugging steps, and performance checks.</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="item-header">
+          <span>DSA: Deep Dive Using Java — GLA University, Value Added Course</span>
+          <span class="item-date">June 2024 - July 2024</span>
+        </div>
+        <ul class="item-bullets">
+          <li>Built strong fundamentals in OOP concepts including inheritance, encapsulation, and abstraction.</li>
+          <li>Practiced Data Structures and Algorithms for analytical and problem-solving skills.</li>
+          <li>Applied theoretical concepts to mini-projects, improving debugging and logical thinking.</li>
         </ul>
       </div>
     </section>
 
+    <!-- PROJECTS -->
     <section class="section">
-      <h3 class="section-heading">Education</h3>
-      <div class="entry">
-        <div class="entry-header">
-          <span>B.Tech in Computer Science and Engineering</span>
-          <span>Graduated</span>
+      <h2 class="section-title">PROJECTS</h2>
+
+      <div style="margin-bottom: 10px;">
+        <div class="item-header">
+          <span>Online Bus Booking System: <a href="https://github.com/jatinsingh82" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 600;">Github Link</a></span>
         </div>
-        <div class="entry-sub">
-          <span>GLA University, Mathura</span>
-          <span>Uttar Pradesh, India</span>
+        <ul class="item-bullets">
+          <li>Developed a scalable web-based ticket booking application with optimized user workflows.</li>
+          <li>Improved booking efficiency by streamlining backend logic and UI responsiveness.</li>
+          <li>Understood deployment considerations and system availability concepts relevant to cloud systems.</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="item-header">
+          <span>Job Portal Application (MERN Stack): <a href="https://github.com/jatinsingh82/Job-portal.git" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 600;">Github Link</a></span>
         </div>
-        <ul>
-          <li>Coursework: Computer Networks, Network Security, Operating Systems, Data Structures & Algorithms, Object-Oriented Programming.</li>
+        <ul class="item-bullets">
+          <li>Built a full-stack job portal handling user authentication, job postings, and search filters.</li>
+          <li>Worked with REST APIs, databases, and frontend-backend integration.</li>
+          <li>Gained exposure to server deployment concepts and performance optimization techniques.</li>
         </ul>
       </div>
     </section>
 
+    <!-- TECHNICAL SKILLS -->
     <section class="section">
-      <h3 class="section-heading">Technical & Security Competencies</h3>
-      <div class="skills-grid">
-        <div class="skill-cat">Cyber Strategy:</div>
-        <div class="skill-list">Threat Modeling (STRIDE), NIST CSF, ISO/IEC 27001, IAM, Risk Transformation, Security Governance</div>
-        
-        <div class="skill-cat">Security & Defense:</div>
-        <div class="skill-list">Vulnerability Assessment, TCP/IP & Network Protocols, OWASP Top 10, Incident Response Fundamentals</div>
-        
-        <div class="skill-cat">Engineering:</div>
-        <div class="skill-list">Java, C++, JavaScript (ES6+), HTML5, CSS3, Git, GitHub, Algorithmic Optimization</div>
-        
-        <div class="skill-cat">Systems & Cloud:</div>
-        <div class="skill-list">Linux/Unix Administration, Bash Scripting, Cloud Security Posture Basics (AWS/Azure), REST API Security</div>
+      <h2 class="section-title">TECHNICAL SKILLS</h2>
+      <div class="skills-block">
+        <div class="skill-group">
+          <strong>• Cloud &amp; DevOps Fundamentals:</strong>
+          <ul class="skill-sub-list">
+            <li>Basic cloud concepts: compute, storage, networking.</li>
+            <li>Familiar with AWS and Azure portals.</li>
+            <li>CI/CD basics and version control using Git/GitHub.</li>
+            <li>Understanding of deployment and monitoring workflows.</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <strong>• Programming &amp; Web Technologies:</strong> Python, Java, HTML, CSS, JavaScript, React, Node.js, Express.
+        </div>
+        <div class="skill-group">
+          <strong>• Databases and Tools:</strong> MySQL, MongoDB, VS Code, Eclipse
+        </div>
+        <div class="skill-group">
+          <strong>• Core Concepts:</strong> Data Structures, DBMS, Computer Networking, Cloud Computing.
+        </div>
       </div>
     </section>
 
+    <!-- PROFESSIONAL ACHIEVEMENTS/ INSIGHTS -->
     <section class="section">
-      <h3 class="section-heading">Key Projects</h3>
-      <div class="entry">
-        <div class="entry-header">
-          <span>Rajdeep Enterprises — Corporate Web Platform</span>
-          <span><a href="https://github.com/jatinsingh82/Rajdeep-Enterprises" target="_blank" style="color: var(--accent);">View Repo</a></span>
-        </div>
-        <div class="entry-sub">
-          <span>Role: Sole Web Engineer</span>
-          <span>Tech: HTML5, CSS3, JavaScript</span>
-        </div>
-        <ul>
-          <li>Designed and delivered a responsive enterprise web portal with sub-second page loads and semantic accessibility.</li>
-          <li>Hardened client-side form routing and cross-device interface compatibility.</li>
-        </ul>
-      </div>
+      <h2 class="section-title">PROFESSIONAL ACHIEVEMENTS/ INSIGHTS</h2>
+      <ul class="simple-list">
+        <li>Certificate of Oracle Cloud Infrastructure Foundations by Oracle.</li>
+        <li>Certificate of Oracle Cloud Infrastructure DevOps by Oracle.</li>
+        <li>Certificate of CCNA: Introduction to Networks, Enterprise Networking, Security, and Automation by CISCO Networking Academy.</li>
+        <li>Certificate of Introduction To Cybersecurity by CISCO Networking Academy.</li>
+        <li>Certificate of Python Essentials 1 &amp; Python Essentials 2 by CISCO Networking Academy.</li>
+      </ul>
     </section>
+
+    <!-- CO-CURRICULAR ACTIVITIES -->
+    <section class="section">
+      <h2 class="section-title">CO-CURRICULAR ACTIVITIES</h2>
+      <ul class="simple-list">
+        <li>Event Coordinator for SRIJAN &amp; SPANDAN, GLA University (2025)</li>
+        <li>Demonstrated teamwork, responsibility, and event coordination skills.</li>
+      </ul>
+    </section>
+
   </main>
 </body>
 </html>

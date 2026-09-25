@@ -478,37 +478,172 @@ section {
   background: linear-gradient(180deg, rgba(8,10,15,0.7) 0%, rgba(8,10,15,0.4) 40%, rgba(8,10,15,0.88) 85%, #080a0f 100%);
 }
 
-[data-theme="light"] .cinematic-overlay {
-  background: linear-gradient(180deg, rgba(248,250,252,0.88) 0%, rgba(248,250,252,0.7) 40%, rgba(248,250,252,0.96) 85%, #f8fafc 100%) !important;
+/* Avatar Image Styles */
+.hero-profile-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-light, #818cf8);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-/* Strategic Text & Component Contrast (Light Theme Optimization) */
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-concise-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.about-concise-intro .intro-line {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+.about-concise-intro .intro-line strong {
+  color: var(--text-primary);
+}
+
+/* Strategic Text Contrast */
 .strategic-text {
   color: inherit;
 }
 
-[data-theme="light"] .strategic-text {
-  color: #1e1b4b; /* Deep high-contrast indigo for crisp readability */
-  font-weight: 800;
+/* Genuinely Light Theme System (Ultra-Clean, Crisp & Light) */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --surface-card: #ffffff;
+  --surface-card-hover: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.96);
+
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-medium: rgba(15, 23, 42, 0.14);
+  --border-highlight: rgba(79, 70, 229, 0.35);
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+
+  --accent-primary: #4f46e5;
+  --accent-primary-hover: #4338ca;
+  --accent-light: #4338ca;
+  --accent-glow: rgba(79, 70, 229, 0.1);
+  --accent-cyan: #0284c7;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 24px rgba(79, 70, 229, 0.08);
 }
 
-[data-theme="light"] .pillar-title {
+[data-theme="light"] body {
+  background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
-[data-theme="light"] .pillar-desc {
-  color: #334155 !important;
+[data-theme="light"] .cinematic-media {
+  opacity: 0.08 !important;
+  filter: grayscale(80%) contrast(0.85) brightness(1.2);
 }
 
-[data-theme="light"] .pillar-card {
-  background-color: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+[data-theme="light"] .cinematic-overlay {
+  background: rgba(248, 250, 252, 0.95) !important;
+}
+
+[data-theme="light"] .strategic-text {
+  color: #1e1b4b !important; /* Deep high-contrast indigo */
+  font-weight: 800;
+}
+
+[data-theme="light"] .profile-card,
+[data-theme="light"] .pillar-card,
+[data-theme="light"] .skill-card,
+[data-theme="light"] .featured-project-container,
+[data-theme="light"] .project-card,
+[data-theme="light"] .arch-diagram-wrapper,
+[data-theme="light"] .arch-node-card,
+[data-theme="light"] .arch-node-detail-panel,
+[data-theme="light"] .cert-card,
+[data-theme="light"] .resume-box,
+[data-theme="light"] .contact-card,
+[data-theme="light"] .timeline-content {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+[data-theme="light"] .profile-meta-item,
+[data-theme="light"] .info-panel-card,
+[data-theme="light"] .stat-item,
+[data-theme="light"] .arch-control-item,
+[data-theme="light"] .resume-highlight-card,
+[data-theme="light"] .contact-method-card {
+  background: #f8fafc !important;
+  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .section-title,
+[data-theme="light"] .featured-project-title,
+[data-theme="light"] .project-card-title,
+[data-theme="light"] .profile-name,
+[data-theme="light"] .pillar-title,
+[data-theme="light"] .skill-title,
+[data-theme="light"] .role-title,
+[data-theme="light"] .arch-detail-title,
+[data-theme="light"] .cert-info h3,
+[data-theme="light"] .contact-form-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .section-subtitle,
+[data-theme="light"] .featured-project-desc,
+[data-theme="light"] .project-card-desc,
+[data-theme="light"] .pillar-desc,
+[data-theme="light"] .skill-description,
+[data-theme="light"] .arch-detail-summary,
+[data-theme="light"] .about-narrative p,
+[data-theme="light"] .intro-line {
+  color: #334155 !important;
 }
 
 [data-theme="light"] .pillar-icon {
   background-color: #e0e7ff !important;
   color: #4338ca !important;
+}
+
+[data-theme="light"] .arch-node-card .arch-node-name {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .arch-node-card .arch-node-kicker {
+  color: #4338ca !important;
+}
+
+[data-theme="light"] .arch-node-card.active {
+  background: #ffffff !important;
+  border-color: #4f46e5 !important;
+  border-radius: var(--radius-md, 16px) !important;
+  padding: 18px 16px !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.08) !important;
 }
 
 /* ==========================================================================
@@ -2287,22 +2422,27 @@ section {
 }
 
 .arch-node-card {
-  background: rgba(11, 13, 19, 0.85);
+  background: var(--surface-card, rgba(16, 21, 34, 0.75));
   border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-md, 16px);
-  padding: 20px 16px;
+  padding: 18px 16px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   position: relative;
 }
 
-.arch-node-card:hover,
+.arch-node-card:hover {
+  border-color: var(--border-medium, rgba(255, 255, 255, 0.18));
+  transform: translateY(-2px);
+}
+
 .arch-node-card.active {
-  border-color: var(--accent-light, #9b95ff);
-  background: rgba(117, 108, 255, 0.12);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(117, 108, 255, 0.2);
+  border-color: var(--accent-light, #818cf8);
+  background: var(--surface-card, rgba(16, 21, 34, 0.75));
+  border-radius: var(--radius-md, 16px);
+  padding: 18px 16px;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.08);
 }
 
 .arch-node-kicker {

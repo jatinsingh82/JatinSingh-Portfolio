@@ -8,6 +8,11 @@ const ROOT = process.cwd();
 // Serve all static files from project root
 app.use(express.static(ROOT));
 
+// Explicit resume routes
+app.get(['/resume', '/resume/', '/resume.html', '/download-resume'], (req, res) => {
+  res.sendFile(join(ROOT, 'resume.html'));
+});
+
 // SPA fallback only for actual page routes
 app.get('*', (req, res) => {
   if (req.path.includes('.')) {

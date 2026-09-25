@@ -687,7 +687,6 @@
     { label: 'Go to Skills Matrix', section: 'skills', shortcut: 'S', category: 'Navigation' },
     { label: 'Go to Projects Showcase', section: 'projects', shortcut: 'P', category: 'Navigation' },
     { label: 'Go to Systems Architecture', section: 'architecture', shortcut: 'R', category: 'Navigation' },
-    { label: 'Go to Cybersecurity Lab', section: 'security-lab', shortcut: 'L', category: 'Navigation' },
     { label: 'Go to Certifications', section: 'certifications', shortcut: 'C', category: 'Navigation' },
     { label: 'Go to Resume & Education', section: 'resume', shortcut: 'D', category: 'Navigation' },
     { label: 'Go to Contact', section: 'contact', shortcut: 'M', category: 'Navigation' },

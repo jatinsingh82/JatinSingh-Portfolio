@@ -364,7 +364,7 @@
 
       <div class="case-study-section-item">
         <div class="case-study-num">07 — RESULT</div>
-        <div class="case-study-heading">Verified Posture &amp; Performance</div>
+        <div class="case-study-heading">Systems Posture &amp; Performance</div>
         <p class="case-study-text">${escapeHtml(proj.result || 'Successfully implemented meeting all technical and accessibility criteria.')}</p>
       </div>
 
@@ -523,7 +523,7 @@
                   <thead>
                     <tr>
                       <th>Header</th>
-                      <th>Status</th>
+                      <th>Reference Status</th>
                       <th>Defense Role</th>
                     </tr>
                   </thead>
@@ -533,7 +533,7 @@
                         (h) => `
                       <tr>
                         <td style="font-family: monospace; color: var(--accent-light, #9b95ff);">${escapeHtml(h.name)}</td>
-                        <td><span class="status-tag-green">${escapeHtml(h.status)}</span></td>
+                        <td><span class="status-tag-accent">${escapeHtml(h.status)}</span></td>
                         <td>${escapeHtml(h.role)}</td>
                       </tr>
                     `
@@ -687,6 +687,7 @@
     { label: 'Go to Skills Matrix', section: 'skills', shortcut: 'S', category: 'Navigation' },
     { label: 'Go to Projects Showcase', section: 'projects', shortcut: 'P', category: 'Navigation' },
     { label: 'Go to Systems Architecture', section: 'architecture', shortcut: 'R', category: 'Navigation' },
+    { label: 'Go to Security Lab', section: 'security-lab', shortcut: 'L', category: 'Navigation' },
     { label: 'Go to Certifications', section: 'certifications', shortcut: 'C', category: 'Navigation' },
     { label: 'Go to Resume & Education', section: 'resume', shortcut: 'D', category: 'Navigation' },
     { label: 'Go to Contact', section: 'contact', shortcut: 'M', category: 'Navigation' },
@@ -884,7 +885,7 @@ Type 'help' for available diagnostic commands.`;
   role         - Professional positioning and domains
   skills       - Factual cybersecurity competencies
   projects     - Featured technical and web initiatives
-  education    - Degree and university verification
+  education    - Degree and university credentials
   contact      - Direct communication coordinates
   clear        - Clear terminal screen
   exit         - Close terminal session`;
@@ -903,7 +904,7 @@ Key Focus: NIST CSF, ISO/IEC 27001, STRIDE Threat Modeling, Systems Architecture
 Highlights: NIST CSF, ISO 27001, IAM, Vulnerability Assessment, Java, C++, JavaScript, Linux, TLS.`;
         break;
       case 'projects':
-        response = `Verified Projects:
+        response = `Featured Projects:
   1. Rajdeep Enterprises Digital Platform (Commercial Web Platform)
   2. Job Portal Application (Full-Stack MERN Architecture)
   3. Weather Website (Real-time Meteorological Web Platform)`;
@@ -928,7 +929,7 @@ GitHub: https://github.com/jatinsingh82`;
       case '':
         return;
       default:
-        response = `command not recognized: '${cmd}'. Type 'help' for verified commands.`;
+        response = `command not recognized: '${cmd}'. Type 'help' for available commands.`;
     }
 
     terminalOutput.innerHTML += `\n\n<span style="color: var(--accent-light, #9b95ff);">jatin@cyber-terminal:~$</span> ${escapeHtml(cmd)}\n${response}`;

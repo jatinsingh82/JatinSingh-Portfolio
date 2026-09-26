@@ -37,7 +37,7 @@ window.PORTFOLIO_DATA = {
       id: "exp-1",
       role: "Cybersecurity Analyst",
       specialization: "Cyber Strategy & Transformation",
-      company: "Enterprise Security Practice",
+      company: "Deloitte",
       location: "India",
       duration: "Present",
       isCurrent: true,
@@ -293,40 +293,63 @@ window.PORTFOLIO_DATA = {
   certifications: [
     {
       id: "cert-1",
-      title: "CompTIA Security+",
-      issuer: "CompTIA",
-      status: "Active Credential / Security Specialization",
-      date: "Cybersecurity Standard",
-      description: "Baseline cybersecurity credential covering threat analysis, cryptography, network security, risk management, identity governance, and incident response.",
-      verificationUrl: "https://www.comptia.org/certifications/security",
-      badgeText: "VERIFIED STANDARD"
+      title: "Oracle Cloud Infrastructure Foundations",
+      issuer: "Oracle",
+      description: "Foundational cloud architecture concepts, core OCI compute, storage, networking, and security governance principles."
     },
     {
       id: "cert-2",
-      title: "Certified in Cybersecurity (CC)",
-      issuer: "ISC2",
-      status: "Foundational Security Certification",
-      date: "ISC2 Credential",
-      description: "Industry-standard certification validating foundational security concepts, business continuity, incident response concepts, access controls, and network security.",
-      verificationUrl: "https://www.isc2.org/Certifications/CC",
-      badgeText: "VERIFIED STANDARD"
+      title: "Oracle Cloud Infrastructure DevOps",
+      issuer: "Oracle",
+      description: "Continuous integration, deployment automation, infrastructure as code, and cloud operational workflows."
     },
     {
       id: "cert-3",
-      title: "ISO/IEC 27001 Information Security Management",
-      issuer: "International Standards",
-      status: "ISMS Framework Alignment",
-      date: "Enterprise Governance",
-      description: "Competency in understanding, evaluating, and auditing Information Security Management Systems (ISMS) risk governance controls and operational policies.",
-      verificationUrl: "https://www.iso.org/isoiec-27001-information-security.html",
-      badgeText: "FRAMEWORK MASTERY"
+      title: "CCNA: Introduction to Networks, Enterprise Networking, Security, and Automation",
+      issuer: "Cisco Networking Academy",
+      description: "Enterprise networking fundamentals, IP addressing, routing and switching, network security, and infrastructure automation."
+    },
+    {
+      id: "cert-4",
+      title: "Introduction to Cybersecurity",
+      issuer: "Cisco Networking Academy",
+      description: "Core cybersecurity concepts, threat landscapes, defense-in-depth principles, and data confidentiality standards."
+    },
+    {
+      id: "cert-5",
+      title: "Python Essentials 1 & Python Essentials 2",
+      issuer: "Cisco Networking Academy",
+      description: "Python programming fundamentals, data structures, algorithms, object-oriented design, and systems automation."
+    }
+  ],
+
+  frameworksAndKnowledgeAreas: [
+    {
+      name: "NIST Cybersecurity Framework (CSF)",
+      category: "Security Framework",
+      description: "Enterprise security posture evaluation across Govern, Identify, Protect, Detect, Respond, and Recover core functions."
+    },
+    {
+      name: "ISO/IEC 27001",
+      category: "Security Standard",
+      description: "Information Security Management System (ISMS) risk governance controls and operational policies."
+    },
+    {
+      name: "STRIDE Threat Modeling",
+      category: "Methodology",
+      description: "Systematic architectural threat decomposition analyzing spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege."
+    },
+    {
+      name: "Systems Defense & Zero Trust",
+      category: "Architecture",
+      description: "Defense-in-depth principles, least privilege enforcement, and continuous verification controls."
     }
   ],
 
   // Interactive Architecture Nodes
   architecture: {
     title: "End-to-End Enterprise Cyber & Systems Architecture",
-    subtitle: "Interactive breakdown of modern layered defense across client, network, application, and infrastructure layers.",
+    subtitle: "Interactive conceptual model demonstrating layered defense architecture across client, network, application, governance, and infrastructure layers.",
     nodes: [
       {
         id: "client",
@@ -334,10 +357,10 @@ window.PORTFOLIO_DATA = {
         badge: "Edge Security",
         summary: "The initial user trust boundary operating within modern web browsers.",
         controls: [
-          "Content Security Policy (CSP) enforcing strict script-src and object-src",
+          "Reference: Content Security Policy (CSP) restricting unauthorized script execution",
           "Sanitized DOM rendering preventing Cross-Site Scripting (XSS)",
           "Secure Cookie attributes (SameSite=Strict, HttpOnly, Secure)",
-          "Subresource Integrity (SRI) verifying asset hashes"
+          "Reference: Subresource Integrity (SRI) for asset hash verification"
         ]
       },
       {
@@ -346,10 +369,10 @@ window.PORTFOLIO_DATA = {
         badge: "Transport Defense",
         summary: "Encrypted communications conduits routing telemetry between client and endpoints.",
         controls: [
-          "TLS 1.3 protocol enforcement with modern cipher suites (PFS)",
-          "HSTS (HTTP Strict Transport Security) with preloading",
-          "CORS (Cross-Origin Resource Sharing) whitelist domain enforcement",
-          "Rate limiting and DDoS mitigation at network ingress"
+          "Reference: TLS 1.3 protocol configuration with modern cipher suites (PFS)",
+          "Reference: HSTS (HTTP Strict Transport Security) with preloading",
+          "Reference: CORS origin domain restrictions and method limits",
+          "Reference: Rate limiting and DDoS mitigation at network ingress"
         ]
       },
       {
@@ -384,7 +407,7 @@ window.PORTFOLIO_DATA = {
         controls: [
           "Encryption at rest (AES-256) for databases and persistent volumes",
           "Network micro-segmentation and strict firewall egress rules",
-          "Hardened Linux kernels with disabled root SSH and minimal packages",
+          "Reference: Hardened Linux kernel baseline with disabled root SSH",
           "Automated vulnerability patch management and configuration drift audits"
         ]
       }
@@ -394,27 +417,27 @@ window.PORTFOLIO_DATA = {
   // Security Lab / Technical Area
   securityLab: {
     title: "Cybersecurity Technical Lab",
-    subtitle: "Interactive security tools, threat modeling matrices, and defense verification checklists.",
+    subtitle: "Interactive security reference demonstrating layered web security controls and defensive architecture concepts.",
     tools: [
       {
         id: "header-audit",
-        title: "HTTP Security Header Auditor",
-        type: "Interactive Inspection",
-        description: "Examine critical defense-in-depth headers recommended by OWASP for enterprise web platforms.",
+        title: "HTTP Security Header Reference",
+        type: "Reference Configuration",
+        description: "Examine recommended defense-in-depth headers and reference configurations advised by OWASP for enterprise web platforms.",
         headers: [
-          { name: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'", status: "Enforced", role: "Defends against XSS and unauthorized script injection" },
-          { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Enforced", role: "Enforces TLS encryption and prevents SSL stripping" },
-          { name: "X-Content-Type-Options", value: "nosniff", status: "Enforced", role: "Blocks MIME type sniffing attacks" },
-          { name: "X-Frame-Options", value: "DENY", status: "Enforced", role: "Prevents UI redressing and clickjacking" },
-          { name: "Referrer-Policy", value: "strict-origin-when-cross-origin", status: "Enforced", role: "Shields sensitive query data from external referrers" },
-          { name: "Permissions-Policy", value: "geolocation=(), camera=(), microphone=()", status: "Enforced", role: "Restricts unauthorized browser hardware sensor access" }
+          { name: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'", status: "Reference Configuration", role: "Defends against XSS and unauthorized script injection" },
+          { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Reference Configuration", role: "Enforces TLS encryption and prevents SSL stripping" },
+          { name: "X-Content-Type-Options", value: "nosniff", status: "Reference Configuration", role: "Blocks MIME type sniffing attacks" },
+          { name: "X-Frame-Options", value: "DENY", status: "Reference Configuration", role: "Prevents UI redressing and clickjacking" },
+          { name: "Referrer-Policy", value: "strict-origin-when-cross-origin", status: "Reference Configuration", role: "Shields sensitive query data from external referrers" },
+          { name: "Permissions-Policy", value: "geolocation=(), camera=(), microphone=()", status: "Reference Configuration", role: "Restricts unauthorized browser hardware sensor access" }
         ]
       },
       {
         id: "stride-matrix",
-        title: "STRIDE Threat Modeling Evaluator",
-        type: "Threat Analysis Matrix",
-        description: "Deconstruct security properties against STRIDE threat vectors with recommended countermeasures.",
+        title: "STRIDE Threat Modeling Matrix",
+        type: "Conceptual Model",
+        description: "Deconstruct security properties against STRIDE threat vectors with recommended architectural countermeasures.",
         threats: [
           { letter: "S", threat: "Spoofing Identity", property: "Authentication", countermeasure: "Enforce multi-factor authentication (MFA), cryptographic sessions, and signed tokens." },
           { letter: "T", threat: "Tampering with Data", property: "Integrity", countermeasure: "Use cryptographic hashes (SHA-256), TLS 1.3 encryption, and digital signatures." },
@@ -426,9 +449,9 @@ window.PORTFOLIO_DATA = {
       },
       {
         id: "zero-trust",
-        title: "Zero-Trust Architecture Checklist",
-        type: "Verification Protocol",
-        description: "Core verification principles guiding modern defense-in-depth security postures.",
+        title: "Zero-Trust Architecture Guidelines",
+        type: "Architecture Reference",
+        description: "Core verification principles guiding modern defense-in-depth security postures and architectural design.",
         principles: [
           { title: "Verify Explicitly", detail: "Always authenticate and authorize based on all available data points (user identity, location, device health, service or workload)." },
           { title: "Use Least-Privileged Access", detail: "Limit user access with Just-In-Time and Just-Enough-Access (JIT/JEA), risk-based adaptive policies, and data protection." },

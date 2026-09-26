@@ -2627,6 +2627,19 @@ section {
   display: inline-block;
 }
 
+.status-tag-accent {
+  color: var(--accent-light, #9b95ff);
+  background: rgba(124, 114, 247, 0.12);
+  border: 1px solid rgba(124, 114, 247, 0.25);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+}
+
 /* GitHub Showcase */
 .github-showcase-grid {
   display: grid;

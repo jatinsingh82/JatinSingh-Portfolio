@@ -142,7 +142,6 @@ class CinematicBackgroundEngine {
     const onScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const scrollY = window.scrollY || window.pageYOffset;
           const factor = this.config.scrollParallaxFactor || 0.1;
 
           this.mediaElements.forEach(({ element, section }) => {

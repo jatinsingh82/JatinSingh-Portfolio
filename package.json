@@ -7,11 +7,16 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "lint": "node -e \"console.log('No lint issues found')\"",
-    "build": "node -e \"console.log('Build completed successfully')\""
+    "lint": "eslint .",
+    "build": "node scripts/validate-build.js"
   },
   "dependencies": {
     "express": "^4.21.2",
     "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0"
   }
 }

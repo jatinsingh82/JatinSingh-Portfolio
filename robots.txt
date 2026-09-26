@@ -1,0 +1,5 @@
+# robots.txt for Jatin Singh Cybersecurity Portfolio
+User-agent: *
+Allow: /
+
+Sitemap: https://jatinsingh-portfolio.vercel.app/sitemap.xml

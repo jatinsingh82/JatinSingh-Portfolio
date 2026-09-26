@@ -18,7 +18,6 @@
 
   function initTheme() {
     const savedTheme = localStorage.getItem(THEME_KEY);
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialTheme = savedTheme || 'dark'; // Dark professional theme default
     setTheme(initialTheme);
   }
@@ -285,7 +284,6 @@
   // 8. PROJECT CASE STUDY MODAL (Polished 01–07 Detail View)
   // ==========================================================================
   const caseStudyModal = document.getElementById('case-study-modal');
-  const caseStudyDialog = document.getElementById('case-study-dialog');
   const caseStudyCloseBtn = document.getElementById('case-study-close-btn');
 
   function openCaseStudy(projectId) {
@@ -523,7 +521,7 @@
                   <thead>
                     <tr>
                       <th>Header</th>
-                      <th>Reference Status</th>
+                      <th>Implementation Status</th>
                       <th>Defense Role</th>
                     </tr>
                   </thead>
@@ -533,7 +531,7 @@
                         (h) => `
                       <tr>
                         <td style="font-family: monospace; color: var(--accent-light, #9b95ff);">${escapeHtml(h.name)}</td>
-                        <td><span class="status-tag-accent">${escapeHtml(h.status)}</span></td>
+                        <td><span class="${h.status.includes('Active') || h.status.includes('Enforced') ? 'status-tag-green' : 'status-tag-accent'}">${escapeHtml(h.status)}</span></td>
                         <td>${escapeHtml(h.role)}</td>
                       </tr>
                     `
@@ -640,7 +638,7 @@
           topics: r.topics || []
         }))
       );
-    } catch (err) {
+    } catch {
       // Graceful offline fallback
       renderRepos(fallback);
     }
@@ -877,7 +875,7 @@ Type 'help' for available diagnostic commands.`;
   function handleTerminalCommand(cmd) {
     if (!terminalOutput) return;
 
-    let response = '';
+    let response;
     switch (cmd) {
       case 'help':
         response = `Available commands:

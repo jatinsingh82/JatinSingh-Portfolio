@@ -421,16 +421,16 @@ window.PORTFOLIO_DATA = {
     tools: [
       {
         id: "header-audit",
-        title: "HTTP Security Header Reference",
-        type: "Reference Configuration",
-        description: "Examine recommended defense-in-depth headers and reference configurations advised by OWASP for enterprise web platforms.",
+        title: "HTTP Security Header Configuration",
+        type: "Production Implementation",
+        description: "Critical defense-in-depth headers implemented and actively served across all application responses.",
         headers: [
-          { name: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'", status: "Reference Configuration", role: "Defends against XSS and unauthorized script injection" },
-          { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Reference Configuration", role: "Enforces TLS encryption and prevents SSL stripping" },
-          { name: "X-Content-Type-Options", value: "nosniff", status: "Reference Configuration", role: "Blocks MIME type sniffing attacks" },
-          { name: "X-Frame-Options", value: "DENY", status: "Reference Configuration", role: "Prevents UI redressing and clickjacking" },
-          { name: "Referrer-Policy", value: "strict-origin-when-cross-origin", status: "Reference Configuration", role: "Shields sensitive query data from external referrers" },
-          { name: "Permissions-Policy", value: "geolocation=(), camera=(), microphone=()", status: "Reference Configuration", role: "Restricts unauthorized browser hardware sensor access" }
+          { name: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; ...", status: "Active & Enforced", role: "Restricts script execution to origin; mitigates XSS and data exfiltration" },
+          { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Active & Enforced", role: "Enforces TLS 1.3/HTTPS transport and prevents SSL stripping" },
+          { name: "X-Content-Type-Options", value: "nosniff", status: "Active & Enforced", role: "Blocks MIME type sniffing attacks across all static and dynamic assets" },
+          { name: "X-Frame-Options", value: "SAMEORIGIN (frame-ancestors defined)", status: "Active & Enforced", role: "Prevents UI redressing and clickjacking attacks" },
+          { name: "Referrer-Policy", value: "strict-origin-when-cross-origin", status: "Active & Enforced", role: "Shields sensitive query paths from external referrers" },
+          { name: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()", status: "Active & Enforced", role: "Restricts browser hardware sensor and feature access" }
         ]
       },
       {

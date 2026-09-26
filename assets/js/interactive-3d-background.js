@@ -435,7 +435,7 @@ class Interactive3DBackground {
     // Skip heavy calculations if tab is inactive
     if (document.hidden) return;
 
-    const delta = Math.min(this.clock.getDelta(), 0.08);
+    this.clock.getDelta();
     const elapsedTime = this.clock.getElapsedTime();
 
     // 1. Smooth Interpolation for Mouse Movement (Inertia & Damping)

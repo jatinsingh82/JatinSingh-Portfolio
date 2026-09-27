@@ -131,11 +131,70 @@ img {
   display: block;
 }
 
-/* Focus Visible Accessibility */
+/* Skip to Main Content Link (WCAG 2.4.1) */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 20px;
+  background: var(--accent-primary, #6366f1);
+  color: #ffffff !important;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 100000;
+  text-decoration: none;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 2px solid #ffffff;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 16px;
+  outline: 3px solid var(--accent-light, #818cf8);
+  outline-offset: 3px;
+}
+
+/* Enhanced Focus Visible Accessibility (WCAG 2.4.7) */
 :focus-visible {
-  outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--accent-light, #818cf8);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+[data-theme="light"] :focus-visible {
+  outline: 2px solid var(--accent-primary, #4f46e5);
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid var(--accent-light, #818cf8);
+  outline-offset: 3px;
+}
+
+[data-theme="light"] button:focus-visible,
+[data-theme="light"] a:focus-visible,
+[data-theme="light"] input:focus-visible,
+[data-theme="light"] textarea:focus-visible,
+[data-theme="light"] [role="button"]:focus-visible,
+[data-theme="light"] [role="tab"]:focus-visible,
+[data-theme="light"] [tabindex="0"]:focus-visible {
+  outline: 2px solid var(--accent-primary, #4f46e5);
+  outline-offset: 3px;
+}
+
+/* Accessible Form Invalid State */
+.form-input[aria-invalid="true"],
+.form-textarea[aria-invalid="true"] {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.22) !important;
 }
 
 /* Background Canvas & Grid */
@@ -2031,12 +2090,14 @@ section {
   justify-content: center;
   padding: 20px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
 }
 
 .modal-overlay.active {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -2436,6 +2497,11 @@ section {
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  width: 100%;
+  display: block;
 }
 
 .arch-node-card:hover {
@@ -2715,12 +2781,14 @@ section {
   justify-content: center;
   padding: 24px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
 }
 
 .case-study-modal.open {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -2844,12 +2912,14 @@ section {
   justify-content: center;
   padding: 100px 20px 40px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease, visibility 0.25s;
 }
 
 .command-palette-backdrop.open {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -2956,12 +3026,14 @@ section {
   justify-content: center;
   padding: 24px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease, visibility 0.25s;
 }
 
 .terminal-modal.open {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -2994,6 +3066,9 @@ section {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .terminal-dot.red { background: #ff5f56; }
@@ -3089,9 +3164,12 @@ section {
     opacity: 1 !important;
     transform: none !important;
   }
-  #cyber-canvas,
-  #cyber-3d-canvas {
+  #cyber-canvas {
     display: none;
+  }
+  #cyber-3d-canvas {
+    display: block !important;
+    opacity: 0.45 !important;
   }
 }
 

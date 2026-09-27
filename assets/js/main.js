@@ -10,6 +10,87 @@
   const data = window.PORTFOLIO_DATA || {};
 
   // ==========================================================================
+  // ACCESSIBILITY: MODAL FOCUS TRAP & LIFECYCLE MANAGER (WCAG 2.1.2 & 2.4.3)
+  // ==========================================================================
+  let activeModal = null;
+  let previouslyFocusedElement = null;
+
+  function getFocusableElements(container) {
+    if (!container) return [];
+    return Array.from(
+      container.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => el.offsetParent !== null || el.offsetWidth > 0 || el.offsetHeight > 0);
+  }
+
+  function trapFocusKeydown(e) {
+    if (e.key === 'Escape') {
+      if (activeModal && typeof activeModal.close === 'function') {
+        e.preventDefault();
+        activeModal.close();
+      }
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      if (!activeModal || !activeModal.element) return;
+      const focusables = getFocusableElements(activeModal.element);
+      if (focusables.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const firstEl = focusables[0];
+      const lastEl = focusables[focusables.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl || !activeModal.element.contains(document.activeElement)) {
+          e.preventDefault();
+          lastEl.focus();
+        }
+      } else {
+        if (document.activeElement === lastEl || !activeModal.element.contains(document.activeElement)) {
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
+    }
+  }
+
+  function activateModal(element, closeFn, initialFocusElement) {
+    if (activeModal && activeModal.element !== element) {
+      activeModal.close();
+    }
+    previouslyFocusedElement = document.activeElement;
+    activeModal = { element, close: closeFn };
+    document.addEventListener('keydown', trapFocusKeydown);
+
+    setTimeout(() => {
+      if (initialFocusElement && typeof initialFocusElement.focus === 'function') {
+        initialFocusElement.focus();
+      } else {
+        const focusables = getFocusableElements(element);
+        if (focusables.length > 0) focusables[0].focus();
+      }
+    }, 40);
+  }
+
+  function deactivateModal(element) {
+    if (activeModal && activeModal.element === element) {
+      document.removeEventListener('keydown', trapFocusKeydown);
+      activeModal = null;
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+        try {
+          previouslyFocusedElement.focus();
+        } catch {
+          // ignore if unmounted
+        }
+      }
+      previouslyFocusedElement = null;
+    }
+  }
+
+  // ==========================================================================
   // 1. THEME MANAGEMENT (Dark Default with Light Mode Option)
   // ==========================================================================
   const THEME_KEY = 'jatin_portfolio_theme';
@@ -147,6 +228,8 @@
       </svg>
     `;
     mobileMenuBtn.setAttribute('aria-label', 'Close navigation menu');
+    const firstNav = navMenu.querySelector('.nav-link');
+    activateModal(navMenu, closeMobileMenu, firstNav);
   }
 
   function closeMobileMenu() {
@@ -163,6 +246,7 @@
       </svg>
     `;
     mobileMenuBtn.setAttribute('aria-label', 'Toggle navigation menu');
+    deactivateModal(navMenu);
   }
 
   if (mobileMenuBtn && navMenu) {
@@ -269,12 +353,41 @@
   }
 
   if (skillTabs.length > 0) {
-    skillTabs.forEach((tab) => {
+    const tabsArray = Array.from(skillTabs);
+
+    tabsArray.forEach((tab, index) => {
       tab.addEventListener('click', () => {
-        skillTabs.forEach((t) => t.classList.remove('active'));
+        tabsArray.forEach((t) => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
         tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
         const cat = tab.getAttribute('data-category');
         renderSkills(cat);
+      });
+
+      // Accessible Keyboard Navigation for Tablists (WCAG 2.1.1)
+      tab.addEventListener('keydown', (e) => {
+        let targetIndex = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          targetIndex = (index + 1) % tabsArray.length;
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          targetIndex = (index - 1 + tabsArray.length) % tabsArray.length;
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          targetIndex = 0;
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          targetIndex = tabsArray.length - 1;
+        }
+
+        if (targetIndex !== null) {
+          tabsArray[targetIndex].click();
+          tabsArray[targetIndex].focus();
+        }
       });
     });
     renderSkills('all');
@@ -401,6 +514,7 @@
     caseStudyModal.classList.add('open');
     caseStudyModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    activateModal(caseStudyModal, closeCaseStudy, caseStudyCloseBtn);
   }
 
   function closeCaseStudy() {
@@ -408,6 +522,7 @@
     caseStudyModal.classList.remove('open');
     caseStudyModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    deactivateModal(caseStudyModal);
   }
 
   if (caseStudyCloseBtn) {
@@ -418,11 +533,6 @@
       if (e.target === caseStudyModal) closeCaseStudy();
     });
   }
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && caseStudyModal && caseStudyModal.classList.contains('open')) {
-      closeCaseStudy();
-    }
-  });
 
   // Attach case study modal click triggers
   document.querySelectorAll('[data-case-study]').forEach((trigger) => {
@@ -469,7 +579,7 @@
     container.innerHTML = nodes
       .map(
         (n, idx) => `
-      <div class="arch-node-card ${idx === 0 ? 'active' : ''}" data-node-id="${escapeHtml(n.id)}" role="button" tabindex="0" aria-label="Explore ${escapeHtml(n.name)}">
+      <div class="arch-node-card ${idx === 0 ? 'active' : ''}" data-node-id="${escapeHtml(n.id)}" role="button" tabindex="0" aria-label="Explore ${escapeHtml(n.name)}" aria-pressed="${idx === 0 ? 'true' : 'false'}">
         <div class="arch-node-kicker">${escapeHtml(n.badge)}</div>
         <div class="arch-node-name">${escapeHtml(n.name.split('. ')[1] || n.name)}</div>
       </div>
@@ -481,8 +591,12 @@
 
     container.querySelectorAll('.arch-node-card').forEach((card) => {
       const selectNode = () => {
-        container.querySelectorAll('.arch-node-card').forEach((c) => c.classList.remove('active'));
+        container.querySelectorAll('.arch-node-card').forEach((c) => {
+          c.classList.remove('active');
+          c.setAttribute('aria-pressed', 'false');
+        });
         card.classList.add('active');
+        card.setAttribute('aria-pressed', 'true');
         const nodeId = card.getAttribute('data-node-id');
         const targetNode = nodes.find((n) => n.id === nodeId);
         if (targetNode) renderNodeDetail(targetNode);
@@ -517,12 +631,12 @@
               </div>
               <p class="lab-tool-desc">${escapeHtml(tool.description)}</p>
               <div class="lab-table-container">
-                <table class="lab-table">
+                <table class="lab-table" aria-label="Security Response Headers Audit Table">
                   <thead>
                     <tr>
-                      <th>Header</th>
-                      <th>Implementation Status</th>
-                      <th>Defense Role</th>
+                      <th scope="col">Header</th>
+                      <th scope="col">Implementation Status</th>
+                      <th scope="col">Defense Role</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -551,12 +665,12 @@
               </div>
               <p class="lab-tool-desc">${escapeHtml(tool.description)}</p>
               <div class="lab-table-container">
-                <table class="lab-table">
+                <table class="lab-table" aria-label="STRIDE Threat Vector and Security Countermeasure Matrix">
                   <thead>
                     <tr>
-                      <th>STRIDE</th>
-                      <th>Threat Vector</th>
-                      <th>Security Countermeasure</th>
+                      <th scope="col">STRIDE</th>
+                      <th scope="col">Threat Vector</th>
+                      <th scope="col">Security Countermeasure</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -701,17 +815,23 @@
     commandPalette.setAttribute('aria-hidden', 'false');
     if (commandInput) {
       commandInput.value = '';
-      commandInput.focus();
+      commandInput.setAttribute('aria-expanded', 'true');
     }
     renderCommands('');
     document.body.style.overflow = 'hidden';
+    activateModal(commandPalette, closeCommandPalette, commandInput);
   }
 
   function closeCommandPalette() {
     if (!commandPalette) return;
     commandPalette.classList.remove('open');
     commandPalette.setAttribute('aria-hidden', 'true');
+    if (commandInput) {
+      commandInput.setAttribute('aria-expanded', 'false');
+      commandInput.removeAttribute('aria-activedescendant');
+    }
     document.body.style.overflow = '';
+    deactivateModal(commandPalette);
   }
 
   function renderCommands(query = '') {
@@ -723,17 +843,18 @@
 
     if (filtered.length === 0) {
       commandResultsList.innerHTML = `
-        <li style="padding: 20px; text-align: center; color: var(--text-muted, #7f8595); font-size: 13px;">
+        <li style="padding: 20px; text-align: center; color: var(--text-muted, #7f8595); font-size: 13px;" role="presentation">
           No matching commands found.
         </li>
       `;
+      if (commandInput) commandInput.removeAttribute('aria-activedescendant');
       return;
     }
 
     commandResultsList.innerHTML = filtered
       .map(
         (cmd, index) => `
-      <li class="command-item ${index === 0 ? 'focused' : ''}" data-cmd-index="${index}" role="option" tabindex="0">
+      <li id="cmd-opt-${index}" class="command-item ${index === 0 ? 'focused' : ''}" data-cmd-index="${index}" role="option" aria-selected="${index === 0 ? 'true' : 'false'}" tabindex="-1">
         <div class="command-item-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="9 18 15 12 9 6"></polyline>
@@ -745,6 +866,10 @@
     `
       )
       .join('');
+
+    if (commandInput) {
+      commandInput.setAttribute('aria-activedescendant', 'cmd-opt-0');
+    }
 
     commandResultsList.querySelectorAll('.command-item').forEach((li) => {
       li.addEventListener('click', () => {
@@ -772,7 +897,38 @@
     });
 
     commandInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+      const items = Array.from(commandResultsList?.querySelectorAll('.command-item') || []);
+      const currentIndex = items.findIndex((it) => it.classList.contains('focused'));
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (items.length > 0) {
+          const nextIndex = (currentIndex + 1) % items.length;
+          items.forEach((it, idx) => {
+            const isFoc = idx === nextIndex;
+            it.classList.toggle('focused', isFoc);
+            it.setAttribute('aria-selected', isFoc ? 'true' : 'false');
+            if (isFoc) {
+              it.scrollIntoView({ block: 'nearest' });
+              commandInput.setAttribute('aria-activedescendant', it.id || `cmd-opt-${idx}`);
+            }
+          });
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (items.length > 0) {
+          const prevIndex = (currentIndex - 1 + items.length) % items.length;
+          items.forEach((it, idx) => {
+            const isFoc = idx === prevIndex;
+            it.classList.toggle('focused', isFoc);
+            it.setAttribute('aria-selected', isFoc ? 'true' : 'false');
+            if (isFoc) {
+              it.scrollIntoView({ block: 'nearest' });
+              commandInput.setAttribute('aria-activedescendant', it.id || `cmd-opt-${idx}`);
+            }
+          });
+        }
+      } else if (e.key === 'Escape') {
         closeCommandPalette();
       } else if (e.key === 'Enter') {
         const focused = commandResultsList?.querySelector('.command-item.focused') || commandResultsList?.querySelector('.command-item');
@@ -829,7 +985,6 @@
     terminalModal.setAttribute('aria-hidden', 'false');
     if (terminalInput) {
       terminalInput.value = '';
-      terminalInput.focus();
     }
     if (terminalOutput && !terminalOutput.dataset.initialized) {
       terminalOutput.innerHTML = `[AUTHENTICATED TERMINAL SESSION]
@@ -841,6 +996,7 @@ Type 'help' for available diagnostic commands.`;
       terminalOutput.dataset.initialized = 'true';
     }
     document.body.style.overflow = 'hidden';
+    activateModal(terminalModal, closeTerminal, terminalInput);
   }
 
   function closeTerminal() {
@@ -848,6 +1004,7 @@ Type 'help' for available diagnostic commands.`;
     terminalModal.classList.remove('open');
     terminalModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    deactivateModal(terminalModal);
   }
 
   if (terminalCloseDot) {
@@ -980,50 +1137,87 @@ GitHub: https://github.com/jatinsingh82`;
   }
 
   // ==========================================================================
-  // 15. CONTACT FORM HANDLING (Direct, Secure, No Fake Telemetry)
+  // 15. CONTACT FORM HANDLING (Direct Mailto Client Launch, No Fake Submission)
   // ==========================================================================
   const contactForm = document.getElementById('contact-form');
   const formStatus = document.getElementById('form-status');
 
   if (contactForm) {
+    const nameInput = document.getElementById('form-name');
+    const emailInput = document.getElementById('form-email');
+    const messageInput = document.getElementById('form-message');
+
+    // Real-time clearance of error flags when the user corrects input
+    [nameInput, emailInput, messageInput].forEach((input) => {
+      if (input) {
+        input.addEventListener('input', () => {
+          if (input.getAttribute('aria-invalid') === 'true') {
+            input.removeAttribute('aria-invalid');
+            if (formStatus && formStatus.classList.contains('error')) {
+              formStatus.textContent = '';
+              formStatus.className = 'form-status';
+            }
+          }
+        });
+      }
+    });
+
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const nameInput = document.getElementById('form-name');
-      const emailInput = document.getElementById('form-email');
-      const messageInput = document.getElementById('form-message');
+      const name = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const message = messageInput ? messageInput.value.trim() : '';
 
-      const name = nameInput.value.trim();
-      const email = emailInput.value.trim();
-      const message = messageInput.value.trim();
+      if (nameInput) nameInput.removeAttribute('aria-invalid');
+      if (emailInput) emailInput.removeAttribute('aria-invalid');
+      if (messageInput) messageInput.removeAttribute('aria-invalid');
 
-      if (!name || !email || !message) {
-        showFormStatus('Please complete all required fields.', 'error');
+      if (!name) {
+        if (nameInput) {
+          nameInput.setAttribute('aria-invalid', 'true');
+          nameInput.focus();
+        }
+        showFormStatus('Please enter your full name.', 'error');
+        return;
+      }
+
+      if (!email) {
+        if (emailInput) {
+          emailInput.setAttribute('aria-invalid', 'true');
+          emailInput.focus();
+        }
+        showFormStatus('Please enter your email address.', 'error');
         return;
       }
 
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) {
-        showFormStatus('Please enter a valid email address.', 'error');
+        if (emailInput) {
+          emailInput.setAttribute('aria-invalid', 'true');
+          emailInput.focus();
+        }
+        showFormStatus('Please enter a valid email address (e.g. name@example.com).', 'error');
         return;
       }
 
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Transmitting Message...';
+      if (!message) {
+        if (messageInput) {
+          messageInput.setAttribute('aria-invalid', 'true');
+          messageInput.focus();
+        }
+        showFormStatus('Please describe your inquiry or collaboration scope.', 'error');
+        return;
+      }
 
-      setTimeout(() => {
-        const subject = encodeURIComponent(`Cybersecurity Inquiry from ${name}`);
-        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+      const subject = encodeURIComponent(`Cybersecurity Inquiry from ${name}`);
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
 
-        showFormStatus('Opening your default email client to deliver message directly...', 'success');
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-        contactForm.reset();
+      // Clear, honest status indicating the default email client is being launched
+      showFormStatus('Opening your default email client with your pre-filled message addressed to jatinthakur8273@gmail.com...', 'success');
 
-        window.location.href = `mailto:jatinthakur8273@gmail.com?subject=${subject}&body=${body}`;
-      }, 600);
+      // Direct client launch without artificial delay or fake server simulation
+      window.location.href = `mailto:jatinthakur8273@gmail.com?subject=${subject}&body=${body}`;
     });
   }
 
@@ -1045,14 +1239,18 @@ GitHub: https://github.com/jatinsingh82`;
     if (e) e.preventDefault();
     if (resumeModal) {
       resumeModal.classList.add('active');
+      resumeModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      activateModal(resumeModal, closeResumeModal, resumeModalClose);
     }
   }
 
   function closeResumeModal() {
     if (resumeModal) {
       resumeModal.classList.remove('active');
+      resumeModal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      deactivateModal(resumeModal);
     }
   }
 

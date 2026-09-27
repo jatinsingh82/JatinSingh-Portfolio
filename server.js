@@ -13,11 +13,10 @@ app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
 
-  // Content Security Policy
+  // Content Security Policy (frame-ancestors modern replacement for X-Frame-Options)
   const cspDirectives = [
     "default-src 'self'",
     "script-src 'self'",
@@ -29,7 +28,7 @@ app.use((req, res, next) => {
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self' mailto:",
-    "frame-ancestors 'self' https://*.run.app https://*.google.com https://*.vercel.app"
+    "frame-ancestors 'self' https://*.run.app https://*.google.com https://*.google.dev https://*.aistudio.google.com https://*.vercel.app"
   ];
   res.setHeader('Content-Security-Policy', cspDirectives.join('; '));
 
@@ -58,7 +57,7 @@ app.get('*', (req, res) => {
   res.sendFile(join(ROOT, 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const HOST = '0.0.0.0';
 
 app.listen(PORT, HOST, () => {

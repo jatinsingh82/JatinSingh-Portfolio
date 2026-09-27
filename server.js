@@ -38,6 +38,9 @@ app.use((req, res, next) => {
 
 const ROOT = process.cwd();
 
+// Ensure AVIF MIME type is correctly recognized
+express.static.mime.define({ 'image/avif': ['avif'] });
+
 // Serve all static files from project root
 app.use(express.static(ROOT));
 

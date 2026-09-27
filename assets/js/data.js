@@ -236,7 +236,7 @@ window.PORTFOLIO_DATA = {
       myContribution: "Sole Frontend Engineer: designed responsive system layout, implemented client-side interactivity, and optimized for speed, security, and accessibility.",
       implementation: "Built completely from the ground up using clean semantic markup and modern CSS variables for theme consistency without relying on heavy third-party JavaScript runtimes.",
       result: "Achieved sub-second page loads, zero runtime security vulnerabilities, full mobile responsiveness, and a polished brand representation for commercial stakeholders.",
-      image: "src/assets/images/project_rajdeep_preview_1790182635150.jpg",
+      image: "src/assets/images/project_rajdeep_preview_1790182635150.webp",
       github: "https://github.com/jatinsingh82/Rajdeep-Enterprises",
       liveDemo: "https://github.com/jatinsingh82/Rajdeep-Enterprises"
     },
@@ -260,7 +260,7 @@ window.PORTFOLIO_DATA = {
       myContribution: "Full-Stack Developer: built REST APIs, designed MongoDB schemas, implemented user authentication, and optimized frontend-backend integration.",
       implementation: "Developed with React and Express handling stateful search filtering, RESTful endpoints, and backend database integration with performance checks.",
       result: "Successfully created an intuitive, responsive job management portal with robust user authentication, search filters, and smooth database operations.",
-      image: "src/assets/images/datacenter_infra_1790183667384.jpg",
+      image: "src/assets/images/datacenter_infra_1790183667384.webp",
       github: "https://github.com/jatinsingh82/Job-portal.git",
       liveDemo: null
     },
@@ -284,7 +284,7 @@ window.PORTFOLIO_DATA = {
       myContribution: "Designed data fetching pipeline, implemented async state management, crafted responsive dashboard visualization, and deployed live application.",
       implementation: "Clean ES6+ utilizing async/await, modular functions, and CSS grid for dashboard telemetry cards deployed on Vercel.",
       result: "Resilient real-time weather querying with reliable error fallback notifications and zero UI freezes during slow network conditions.",
-      image: "src/assets/images/cloud_architecture_1790183695850.jpg",
+      image: "src/assets/images/cloud_architecture_1790183695850.webp",
       github: "https://github.com/jatinsingh82",
       liveDemo: "https://weather-realtime-website.vercel.app/"
     }

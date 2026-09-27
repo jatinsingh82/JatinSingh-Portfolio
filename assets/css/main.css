@@ -457,6 +457,12 @@ section {
   z-index: 0;
 }
 
+.cinematic-picture,
+.featured-project-picture,
+.portrait-picture {
+  display: contents;
+}
+
 .cinematic-media {
   position: absolute;
   inset: -6% -6%;

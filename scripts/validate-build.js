@@ -201,7 +201,7 @@ if (existsSync(resolve(ROOT_DIR, 'index.html'))) {
 
 if (existsSync(resolve(ROOT_DIR, 'index.html'))) {
   const indexContent = readFileSync(resolve(ROOT_DIR, 'index.html'), 'utf8');
-  const imgRegex = /src=["'](src\/assets\/images\/[^"']+)["']/g;
+  const imgRegex = /(?:src|srcset)=["']\/?(src\/assets\/images\/[^"']+)["']/g;
   let imgMatch;
   const verifiedImages = new Set();
   while ((imgMatch = imgRegex.exec(indexContent)) !== null) {

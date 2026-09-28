@@ -41,7 +41,7 @@ window.PORTFOLIO_DATA = {
       location: "India",
       duration: "Present",
       isCurrent: true,
-      summary: "Leading and contributing to cyber posture transformation initiatives, enterprise risk assessments, and secure systems architecture reviews.",
+      summary: "Contributing to cyber posture transformation initiatives, enterprise risk assessments, and secure systems architecture reviews.",
       responsibilities: [
         "Evaluate organizational security postures against NIST Cybersecurity Framework (CSF) and ISO/IEC 27001 control standards.",
         "Conduct threat modeling and attack surface mapping across web applications, cloud environments, and internal networks.",
@@ -238,7 +238,7 @@ window.PORTFOLIO_DATA = {
       result: "Delivered a fast, fully responsive web application with clean semantic structure, robust client-side validation, and polished commercial brand representation.",
       image: "src/assets/images/project_rajdeep_preview_1790182635150.webp",
       github: "https://github.com/jatinsingh82/Rajdeep-Enterprises",
-      liveDemo: "https://github.com/jatinsingh82/Rajdeep-Enterprises"
+      liveDemo: null
     },
     {
       id: "job-portal",
@@ -305,7 +305,7 @@ window.PORTFOLIO_DATA = {
     },
     {
       id: "cert-3",
-      title: "CCNA: Introduction to Networks, Enterprise Networking, Security, and Automation",
+      title: "CCNA Course Series: Introduction to Networks, Enterprise Networking, Security, and Automation",
       issuer: "Cisco Networking Academy",
       description: "Enterprise networking fundamentals, IP addressing, routing and switching, network security, and infrastructure automation."
     },
@@ -422,8 +422,8 @@ window.PORTFOLIO_DATA = {
       {
         id: "header-audit",
         title: "HTTP Security Header Configuration",
-        type: "Production Implementation",
-        description: "Critical defense-in-depth headers implemented and actively served across all application responses.",
+        type: "Live Portfolio Server Implementation",
+        description: "Critical defense-in-depth headers actively served on this domain across all application responses.",
         headers: [
           { name: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; ...", status: "Active & Enforced", role: "Restricts script execution to origin; mitigates XSS and data exfiltration" },
           { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Active & Enforced", role: "Enforces TLS 1.3/HTTPS transport and prevents SSL stripping" },

@@ -91,6 +91,44 @@
   }
 
   // ==========================================================================
+  // SECURITY & SANITIZATION HELPERS (XSS & Protocol Injection Prevention)
+  // ==========================================================================
+  function escapeHtml(str) {
+    if (typeof str !== 'string') return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function sanitizeUrl(url) {
+    if (typeof url !== 'string') return '#';
+    const trimmed = url.trim();
+    if (/^(https?:\/\/|\/|#|mailto:)/i.test(trimmed)) {
+      return escapeHtml(trimmed);
+    }
+    return '#';
+  }
+
+  function safeGetStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function safeSetStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Storage unavailable or restricted
+    }
+  }
+
+  // ==========================================================================
   // 1. THEME MANAGEMENT (Dark Default with Light Mode Option)
   // ==========================================================================
   const THEME_KEY = 'jatin_portfolio_theme';
@@ -98,7 +136,7 @@
   const themeToggleBtn = document.getElementById('theme-toggle');
 
   function initTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY);
+    const savedTheme = safeGetStorage(THEME_KEY);
     const initialTheme = savedTheme || 'dark'; // Dark professional theme default
     setTheme(initialTheme);
   }
@@ -111,7 +149,7 @@
       htmlEl.removeAttribute('data-theme');
       updateThemeIcon('dark');
     }
-    localStorage.setItem(THEME_KEY, theme);
+    safeSetStorage(THEME_KEY, theme);
   }
 
   function toggleTheme() {
@@ -483,7 +521,7 @@
         ${
           proj.github
             ? `
-          <a href="${escapeHtml(proj.github)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+          <a href="${sanitizeUrl(proj.github)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
               <path d="M9 18c-4.51 2-5-2-7-2"></path>
@@ -496,7 +534,7 @@
         ${
           proj.liveDemo
             ? `
-          <a href="${escapeHtml(proj.liveDemo)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+          <a href="${sanitizeUrl(proj.liveDemo)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
               <polyline points="15 3 21 3 21 9"></polyline>
@@ -761,7 +799,7 @@
       container.innerHTML = reposList
         .map(
           (repo) => `
-        <a href="${escapeHtml(repo.url)}" target="_blank" rel="noopener noreferrer" class="github-repo-card reveal-item" aria-label="View repository ${escapeHtml(repo.name)} on GitHub">
+        <a href="${sanitizeUrl(repo.url)}" target="_blank" rel="noopener noreferrer" class="github-repo-card reveal-item" aria-label="View repository ${escapeHtml(repo.name)} on GitHub">
           <div class="repo-card-title">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
@@ -803,8 +841,8 @@
     { label: 'Go to Certifications', section: 'certifications', shortcut: 'C', category: 'Navigation' },
     { label: 'Go to Resume & Education', section: 'resume', shortcut: 'D', category: 'Navigation' },
     { label: 'Go to Contact', section: 'contact', shortcut: 'M', category: 'Navigation' },
-    { label: 'Open GitHub Profile', action: () => window.open('https://github.com/jatinsingh82', '_blank'), shortcut: 'G', category: 'External Links' },
-    { label: 'Open LinkedIn Profile', action: () => window.open('https://www.linkedin.com/in/jatinsingh82/', '_blank'), shortcut: 'I', category: 'External Links' },
+    { label: 'Open GitHub Profile', action: () => window.open('https://github.com/jatinsingh82', '_blank', 'noopener,noreferrer'), shortcut: 'G', category: 'External Links' },
+    { label: 'Open LinkedIn Profile', action: () => window.open('https://www.linkedin.com/in/jatinsingh82/', '_blank', 'noopener,noreferrer'), shortcut: 'I', category: 'External Links' },
     { label: 'Open Cyber Terminal Easter Egg', action: () => openTerminal(), shortcut: '~', category: 'Developer Tools' },
     { label: 'Toggle Light / Dark Theme', action: () => toggleTheme(), shortcut: 'T', category: 'Appearance' }
   ];
@@ -1084,10 +1122,10 @@ GitHub: https://github.com/jatinsingh82`;
       case '':
         return;
       default:
-        response = `command not recognized: '${cmd}'. Type 'help' for available commands.`;
+        response = `command not recognized: '${escapeHtml(cmd)}'. Type 'help' for available commands.`;
     }
 
-    terminalOutput.innerHTML += `\n\n<span style="color: var(--accent-light, #9b95ff);">jatin@cyber-terminal:~$</span> ${escapeHtml(cmd)}\n${response}`;
+    terminalOutput.innerHTML += `\n\n<span style="color: var(--accent-light, #9b95ff);">jatin@cyber-terminal:~$</span> ${escapeHtml(cmd)}\n${escapeHtml(response)}`;
     terminalOutput.scrollTop = terminalOutput.scrollHeight;
   }
 
@@ -1273,17 +1311,6 @@ GitHub: https://github.com/jatinsingh82`;
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-  }
-
-  // Helper: HTML sanitization
-  function escapeHtml(str) {
-    if (typeof str !== 'string') return '';
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
   }
 
   // ==========================================================================

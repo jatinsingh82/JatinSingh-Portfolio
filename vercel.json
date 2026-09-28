@@ -22,6 +22,10 @@
   ],
   "routes": [
     {
+      "src": "^/(server\\.js|package.*\\.json|bun\\.lock|metadata\\.json|eslint\\.config\\.js|vercel\\.json|scripts/.*|\\..*)",
+      "status": 404
+    },
+    {
       "handle": "filesystem"
     },
     {

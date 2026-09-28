@@ -37,11 +37,32 @@ app.use((req, res, next) => {
 
 const ROOT = process.cwd();
 
+// Security Guard: Block direct public access to backend code, configs, lockfiles, and scripts
+app.use((req, res, next) => {
+  const normalizedPath = decodeURIComponent(req.path).toLowerCase();
+  const blockedPatterns = [
+    /^\/server\.js$/,
+    /^\/package(-lock)?\.json$/,
+    /^\/bun\.lock$/,
+    /^\/metadata\.json$/,
+    /^\/eslint\.config\.js$/,
+    /^\/vercel\.json$/,
+    /^\/scripts(\/|$)/,
+    /^\/\./
+  ];
+
+  if (blockedPatterns.some((pattern) => pattern.test(normalizedPath))) {
+    return res.status(404).send('Not found');
+  }
+
+  next();
+});
+
 // Ensure AVIF MIME type is correctly recognized
 express.static.mime.define({ 'image/avif': ['avif'] });
 
-// Serve all static files from project root
-app.use(express.static(ROOT));
+// Serve public static assets with dotfiles protected
+app.use(express.static(ROOT, { dotfiles: 'ignore' }));
 
 // Explicit resume routes
 app.get(['/resume', '/resume/', '/resume.html', '/download-resume'], (req, res) => {

@@ -236,6 +236,32 @@
       margin-bottom: 3px;
     }
 
+    @media screen and (max-width: 600px) {
+      body {
+        padding: 16px 12px;
+      }
+      .resume-sheet {
+        padding: 22px 16px;
+      }
+      .name-title {
+        font-size: 22px;
+      }
+      .actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .btn-print,
+      .back-link {
+        justify-content: center;
+        width: 100%;
+      }
+      .contact-line {
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+
     @media print {
       body { background: #ffffff; padding: 0; }
       .actions-bar { display: none; }

@@ -426,9 +426,9 @@ window.PORTFOLIO_DATA = {
         description: "Critical defense-in-depth headers actively served on this domain across all application responses.",
         headers: [
           { name: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; ...", status: "Active & Enforced", role: "Restricts script execution to origin; mitigates XSS and data exfiltration" },
-          { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Active & Enforced", role: "Enforces TLS 1.3/HTTPS transport and prevents SSL stripping" },
+          { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Active & Enforced", role: "Enforces HTTPS connections and helps prevent protocol downgrade and insecure HTTP access" },
           { name: "X-Content-Type-Options", value: "nosniff", status: "Active & Enforced", role: "Blocks MIME type sniffing attacks across all static and dynamic assets" },
-          { name: "X-Frame-Options", value: "SAMEORIGIN (frame-ancestors defined)", status: "Active & Enforced", role: "Prevents UI redressing and clickjacking attacks" },
+          { name: "Clickjacking Protection", value: "CSP frame-ancestors defined", status: "Active & Enforced", role: "Protects against framing and UI redressing via CSP frame-ancestors directive" },
           { name: "Referrer-Policy", value: "strict-origin-when-cross-origin", status: "Active & Enforced", role: "Shields sensitive query paths from external referrers" },
           { name: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()", status: "Active & Enforced", role: "Restricts browser hardware sensor and feature access" }
         ]

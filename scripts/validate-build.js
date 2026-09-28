@@ -120,6 +120,7 @@ if (validateFileExists('index.html', 'Main HTML entry')) {
     'id="command-palette"',
     'id="terminal-modal"',
     'id="case-study-modal"',
+    'id="github-showcase-container"',
     'id="contact-form"'
   ];
 

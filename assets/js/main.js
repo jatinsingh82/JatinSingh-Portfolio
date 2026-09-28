@@ -1,0 +1,1404 @@
+/**
+ * Jatin Singh — Portfolio Interactive Engine
+ * High-performance, accessible, and lightweight vanilla JavaScript.
+ * Strictly adheres to authentic professional data and security practices.
+ */
+
+(function () {
+  'use strict';
+
+  const data = window.PORTFOLIO_DATA || {};
+
+  // ==========================================================================
+  // ACCESSIBILITY: MODAL FOCUS TRAP & LIFECYCLE MANAGER (WCAG 2.1.2 & 2.4.3)
+  // ==========================================================================
+  let activeModal = null;
+  let previouslyFocusedElement = null;
+
+  function getFocusableElements(container) {
+    if (!container) return [];
+    return Array.from(
+      container.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => el.offsetParent !== null || el.offsetWidth > 0 || el.offsetHeight > 0);
+  }
+
+  function trapFocusKeydown(e) {
+    if (e.key === 'Escape') {
+      if (activeModal && typeof activeModal.close === 'function') {
+        e.preventDefault();
+        activeModal.close();
+      }
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      if (!activeModal || !activeModal.element) return;
+      const focusables = getFocusableElements(activeModal.element);
+      if (focusables.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const firstEl = focusables[0];
+      const lastEl = focusables[focusables.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl || !activeModal.element.contains(document.activeElement)) {
+          e.preventDefault();
+          lastEl.focus();
+        }
+      } else {
+        if (document.activeElement === lastEl || !activeModal.element.contains(document.activeElement)) {
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
+    }
+  }
+
+  function activateModal(element, closeFn, initialFocusElement) {
+    if (activeModal && activeModal.element !== element) {
+      activeModal.close();
+    }
+    previouslyFocusedElement = document.activeElement;
+    activeModal = { element, close: closeFn };
+    document.addEventListener('keydown', trapFocusKeydown);
+
+    setTimeout(() => {
+      if (initialFocusElement && typeof initialFocusElement.focus === 'function') {
+        initialFocusElement.focus();
+      } else {
+        const focusables = getFocusableElements(element);
+        if (focusables.length > 0) focusables[0].focus();
+      }
+    }, 40);
+  }
+
+  function deactivateModal(element) {
+    if (activeModal && activeModal.element === element) {
+      document.removeEventListener('keydown', trapFocusKeydown);
+      activeModal = null;
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+        try {
+          previouslyFocusedElement.focus();
+        } catch {
+          // ignore if unmounted
+        }
+      }
+      previouslyFocusedElement = null;
+    }
+  }
+
+  // ==========================================================================
+  // SECURITY & SANITIZATION HELPERS (XSS & Protocol Injection Prevention)
+  // ==========================================================================
+  function escapeHtml(str) {
+    if (typeof str !== 'string') return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function sanitizeUrl(url) {
+    if (typeof url !== 'string') return '#';
+    const trimmed = url.trim();
+    if (/^(https?:\/\/|\/|#|mailto:)/i.test(trimmed)) {
+      return escapeHtml(trimmed);
+    }
+    return '#';
+  }
+
+  function safeGetStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function safeSetStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Storage unavailable or restricted
+    }
+  }
+
+  // ==========================================================================
+  // 1. THEME MANAGEMENT (Dark Default with Light Mode Option)
+  // ==========================================================================
+  const THEME_KEY = 'jatin_portfolio_theme';
+  const htmlEl = document.documentElement;
+  const themeToggleBtn = document.getElementById('theme-toggle');
+
+  function initTheme() {
+    const savedTheme = safeGetStorage(THEME_KEY);
+    const initialTheme = savedTheme || 'dark'; // Dark professional theme default
+    setTheme(initialTheme);
+  }
+
+  function setTheme(theme) {
+    if (theme === 'light') {
+      htmlEl.setAttribute('data-theme', 'light');
+      updateThemeIcon('light');
+    } else {
+      htmlEl.removeAttribute('data-theme');
+      updateThemeIcon('dark');
+    }
+    safeSetStorage(THEME_KEY, theme);
+  }
+
+  function toggleTheme() {
+    const currentTheme = htmlEl.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    setTheme(currentTheme === 'light' ? 'dark' : 'light');
+  }
+
+  function updateThemeIcon(theme) {
+    if (!themeToggleBtn) return;
+    if (theme === 'light') {
+      themeToggleBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+      `;
+      themeToggleBtn.setAttribute('aria-label', 'Switch to dark theme');
+    } else {
+      themeToggleBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2"></path>
+          <path d="M12 20v2"></path>
+          <path d="m4.93 4.93 1.41 1.41"></path>
+          <path d="m17.66 17.66 1.41 1.41"></path>
+          <path d="M2 12h2"></path>
+          <path d="M20 12h2"></path>
+          <path d="m6.34 17.66-1.41 1.41"></path>
+          <path d="m19.07 4.93-1.41 1.41"></path>
+        </svg>
+      `;
+      themeToggleBtn.setAttribute('aria-label', 'Switch to light theme');
+    }
+  }
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', toggleTheme);
+  }
+  initTheme();
+
+  // ==========================================================================
+  // 2. HEADER SCROLL & PROGRESS BAR
+  // ==========================================================================
+  const header = document.querySelector('.site-header');
+  const progressBar = document.getElementById('scroll-progress');
+
+  let cachedDocHeight = 1;
+  function updateScrollMetrics() {
+    cachedDocHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+  }
+
+  function handleScroll() {
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    if (header) {
+      if (scrollY > 40) {
+        header.classList.add('scrolled');
+        header.classList.remove('transparent-header');
+      } else {
+        header.classList.remove('scrolled');
+        header.classList.add('transparent-header');
+      }
+    }
+
+    if (progressBar) {
+      const progress = Math.min(Math.max((scrollY / cachedDocHeight) * 100, 0), 100);
+      progressBar.style.width = `${progress}%`;
+      progressBar.setAttribute('aria-valuenow', Math.round(progress));
+    }
+  }
+
+  // ==========================================================================
+  // 3. NAVIGATION SPY (Active Section Highlighting)
+  // ==========================================================================
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section[id]');
+
+  function updateActiveNav() {
+    const scrollY = (window.scrollY || window.pageYOffset) + 160;
+
+    for (let i = 0; i < sections.length; i++) {
+      const current = sections[i];
+      const sectionHeight = current.offsetHeight;
+      const sectionTop = current.offsetTop;
+      const sectionId = current.getAttribute('id');
+
+      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+        navLinks.forEach((link) => {
+          if (link.getAttribute('href') === `#${sectionId}`) {
+            link.classList.add('active');
+          } else if (link.getAttribute('href')?.startsWith('#')) {
+            link.classList.remove('active');
+          }
+        });
+        break;
+      }
+    }
+  }
+
+  // Unified throttled scroll dispatcher to eliminate layout thrashing
+  let isScrollTicking = false;
+  function onScrollTick() {
+    if (!isScrollTicking) {
+      isScrollTicking = true;
+      requestAnimationFrame(() => {
+        handleScroll();
+        updateActiveNav();
+        isScrollTicking = false;
+      });
+    }
+  }
+
+  window.addEventListener('scroll', onScrollTick, { passive: true });
+  window.addEventListener('resize', updateScrollMetrics, { passive: true });
+  updateScrollMetrics();
+  handleScroll();
+  updateActiveNav();
+
+  // ==========================================================================
+  // 4. MOBILE DRAWER MENU
+  // ==========================================================================
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const navMenu = document.getElementById('nav-menu');
+
+  function openMobileMenu() {
+    if (!mobileMenuBtn || !navMenu) return;
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    navMenu.classList.add('open');
+    document.body.classList.add('mobile-nav-open');
+    document.body.style.overflow = 'hidden';
+    mobileMenuBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    `;
+    mobileMenuBtn.setAttribute('aria-label', 'Close navigation menu');
+    const firstNav = navMenu.querySelector('.nav-link');
+    activateModal(navMenu, closeMobileMenu, firstNav);
+  }
+
+  function closeMobileMenu() {
+    if (!mobileMenuBtn || !navMenu) return;
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    navMenu.classList.remove('open');
+    document.body.classList.remove('mobile-nav-open');
+    document.body.style.overflow = '';
+    mobileMenuBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="4" x2="20" y1="12" y2="12"></line>
+        <line x1="4" x2="20" y1="6" y2="6"></line>
+        <line x1="4" x2="20" y1="18" y2="18"></line>
+      </svg>
+    `;
+    mobileMenuBtn.setAttribute('aria-label', 'Toggle navigation menu');
+    deactivateModal(navMenu);
+  }
+
+  if (mobileMenuBtn && navMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    });
+
+    navMenu.querySelectorAll('.nav-link').forEach((link) => {
+      link.addEventListener('click', () => {
+        closeMobileMenu();
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+        closeMobileMenu();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && navMenu.classList.contains('open')) {
+        closeMobileMenu();
+      }
+    });
+  }
+
+  // ==========================================================================
+  // 5. SUBTLE SCROLL REVEAL (IntersectionObserver)
+  // ==========================================================================
+  const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function initScrollReveal() {
+    if (isReducedMotion || !('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal-item').forEach((el) => el.classList.add('revealed'));
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      rootMargin: '0px 0px -40px 0px',
+      threshold: 0.08
+    });
+
+    document.querySelectorAll('.reveal-item').forEach((el) => {
+      revealObserver.observe(el);
+    });
+  }
+
+  // ==========================================================================
+  // 6. INTERACTIVE EXPERIENCE TIMELINE (In-place Expansion)
+  // ==========================================================================
+  function initExperienceExpansion() {
+    const expandBtn = document.getElementById('experience-expand-toggle');
+    const deepDivePanel = document.getElementById('experience-deep-dive-panel');
+
+    if (expandBtn && deepDivePanel) {
+      expandBtn.addEventListener('click', () => {
+        const isOpen = deepDivePanel.classList.toggle('open');
+        expandBtn.setAttribute('aria-expanded', isOpen);
+        expandBtn.innerHTML = isOpen
+          ? `Hide Control Mapping <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"></polyline></svg>`
+          : `Deep Dive &amp; Control Mapping <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+      });
+    }
+  }
+
+  // ==========================================================================
+  // 7. CYBERSECURITY SKILL MATRIX (Domain Tabs & Factual Descriptions)
+  // ==========================================================================
+  const skillTabs = document.querySelectorAll('.skill-tab-btn');
+  const skillsContainer = document.getElementById('skills-container');
+
+  function renderSkills(category = 'all') {
+    if (!skillsContainer || !data.skills) return;
+    const allSkills = data.skills.items || [];
+    const filtered = category === 'all' ? allSkills : allSkills.filter((s) => s.category === category);
+
+    skillsContainer.innerHTML = filtered
+      .map((skill) => {
+        const catObj = data.skills.categories.find((c) => c.id === skill.category);
+        const catName = catObj ? catObj.name : skill.category;
+        return `
+          <div class="skill-card reveal-item revealed" data-category="${escapeHtml(skill.category)}">
+            <div class="skill-name-row">
+              <h3 class="skill-title">${escapeHtml(skill.name)}</h3>
+              <span class="skill-category-badge">${escapeHtml(catName)}</span>
+            </div>
+            <p class="skill-description">${escapeHtml(skill.description)}</p>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  if (skillTabs.length > 0) {
+    const tabsArray = Array.from(skillTabs);
+
+    tabsArray.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        tabsArray.forEach((t) => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        const cat = tab.getAttribute('data-category');
+        renderSkills(cat);
+      });
+
+      // Accessible Keyboard Navigation for Tablists (WCAG 2.1.1)
+      tab.addEventListener('keydown', (e) => {
+        let targetIndex = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          targetIndex = (index + 1) % tabsArray.length;
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          targetIndex = (index - 1 + tabsArray.length) % tabsArray.length;
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          targetIndex = 0;
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          targetIndex = tabsArray.length - 1;
+        }
+
+        if (targetIndex !== null) {
+          tabsArray[targetIndex].click();
+          tabsArray[targetIndex].focus();
+        }
+      });
+    });
+    renderSkills('all');
+  }
+
+  // ==========================================================================
+  // 8. PROJECT CASE STUDY MODAL (Polished 01–07 Detail View)
+  // ==========================================================================
+  const caseStudyModal = document.getElementById('case-study-modal');
+  const caseStudyCloseBtn = document.getElementById('case-study-close-btn');
+
+  function openCaseStudy(projectId) {
+    if (!caseStudyModal || !data.projects) return;
+    const proj = data.projects.find((p) => p.id === projectId);
+    if (!proj) return;
+
+    const modalKicker = document.getElementById('modal-case-kicker');
+    const modalTitle = document.getElementById('modal-case-title');
+    const modalBody = document.getElementById('modal-case-body');
+
+    if (modalKicker) modalKicker.textContent = proj.categoryLabel || 'PROJECT CASE STUDY';
+    if (modalTitle) modalTitle.textContent = proj.title;
+
+    let html = `
+      <div class="case-study-section-item">
+        <div class="case-study-num">01 — OVERVIEW</div>
+        <div class="case-study-heading">Strategic Context</div>
+        <p class="case-study-text">${escapeHtml(proj.summary)}</p>
+      </div>
+
+      <div class="case-study-section-item">
+        <div class="case-study-num">02 — PROBLEM</div>
+        <div class="case-study-heading">Challenge &amp; Risk Parameters</div>
+        <p class="case-study-text">${escapeHtml(proj.problem)}</p>
+      </div>
+
+      <div class="case-study-section-item">
+        <div class="case-study-num">03 — SOLUTION</div>
+        <div class="case-study-heading">Engineering &amp; Security Countermeasures</div>
+        <p class="case-study-text">${escapeHtml(proj.solution || proj.summary)}</p>
+      </div>
+
+      <div class="case-study-section-item">
+        <div class="case-study-num">04 — ARCHITECTURE</div>
+        <div class="case-study-heading">System Pipeline &amp; Data Boundaries</div>
+        <p class="case-study-text">${escapeHtml(proj.architectureDescription || '')}</p>
+        ${
+          proj.architectureSteps
+            ? `
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+            ${proj.architectureSteps
+              .map(
+                (step) => `
+              <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 8px;">
+                <span style="font-family: monospace; font-size: 11px; color: var(--accent-light, #9b95ff); font-weight: 600;">${escapeHtml(step.label)}:</span>
+                <span style="font-size: 13px; color: var(--text-secondary, #b8bdca); margin-left: 6px;">${escapeHtml(step.desc)}</span>
+              </div>
+            `
+              )
+              .join('')}
+          </div>
+        `
+            : ''
+        }
+      </div>
+
+      <div class="case-study-section-item">
+        <div class="case-study-num">05 — TECHNOLOGY</div>
+        <div class="case-study-heading">Technical Stack &amp; Protocols</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+          ${(proj.technologies || [])
+            .map(
+              (tech) =>
+                `<span style="background: rgba(124, 115, 255, 0.12); border: 1px solid rgba(124, 115, 255, 0.3); color: var(--accent-light, #9b95ff); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-family: monospace;">${escapeHtml(tech)}</span>`
+            )
+            .join('')}
+        </div>
+      </div>
+
+      <div class="case-study-section-item">
+        <div class="case-study-num">06 — IMPLEMENTATION</div>
+        <div class="case-study-heading">Engineering Discipline</div>
+        <p class="case-study-text">${escapeHtml(proj.implementation || proj.myContribution || '')}</p>
+      </div>
+
+      <div class="case-study-section-item">
+        <div class="case-study-num">07 — RESULT</div>
+        <div class="case-study-heading">Systems Posture &amp; Performance</div>
+        <p class="case-study-text">${escapeHtml(proj.result || 'Successfully implemented meeting all technical and accessibility criteria.')}</p>
+      </div>
+
+      <div class="case-study-actions">
+        ${
+          proj.github
+            ? `
+          <a href="${sanitizeUrl(proj.github)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+              <path d="M9 18c-4.51 2-5-2-7-2"></path>
+            </svg>
+            View Repository
+          </a>
+        `
+            : ''
+        }
+        ${
+          proj.liveDemo
+            ? `
+          <a href="${sanitizeUrl(proj.liveDemo)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            Explore Live Demo
+          </a>
+        `
+            : ''
+        }
+      </div>
+    `;
+
+    if (modalBody) modalBody.innerHTML = html;
+    caseStudyModal.classList.add('open');
+    caseStudyModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    activateModal(caseStudyModal, closeCaseStudy, caseStudyCloseBtn);
+  }
+
+  function closeCaseStudy() {
+    if (!caseStudyModal) return;
+    caseStudyModal.classList.remove('open');
+    caseStudyModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    deactivateModal(caseStudyModal);
+  }
+
+  if (caseStudyCloseBtn) {
+    caseStudyCloseBtn.addEventListener('click', closeCaseStudy);
+  }
+  if (caseStudyModal) {
+    caseStudyModal.addEventListener('click', (e) => {
+      if (e.target === caseStudyModal) closeCaseStudy();
+    });
+  }
+
+  // Attach case study modal click triggers
+  document.querySelectorAll('[data-case-study]').forEach((trigger) => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const projId = trigger.getAttribute('data-case-study');
+      openCaseStudy(projId);
+    });
+  });
+
+  // ==========================================================================
+  // 9. INTERACTIVE SYSTEMS ARCHITECTURE (Visual Pipeline Explorer)
+  // ==========================================================================
+  function initArchitectureExplorer() {
+    const nodes = data.architecture?.nodes || [];
+    const container = document.getElementById('arch-nodes-container');
+    const titleEl = document.getElementById('arch-detail-title');
+    const badgeEl = document.getElementById('arch-detail-badge');
+    const summaryEl = document.getElementById('arch-detail-summary');
+    const controlsListEl = document.getElementById('arch-controls-list');
+
+    if (!container || nodes.length === 0) return;
+
+    function renderNodeDetail(node) {
+      if (titleEl) titleEl.textContent = node.name;
+      if (badgeEl) badgeEl.textContent = node.badge;
+      if (summaryEl) summaryEl.textContent = node.summary;
+      if (controlsListEl) {
+        controlsListEl.innerHTML = (node.controls || [])
+          .map(
+            (ctrl) => `
+          <div class="arch-control-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>${escapeHtml(ctrl)}</span>
+          </div>
+        `
+          )
+          .join('');
+      }
+    }
+
+    container.innerHTML = nodes
+      .map(
+        (n, idx) => `
+      <div class="arch-node-card ${idx === 0 ? 'active' : ''}" data-node-id="${escapeHtml(n.id)}" role="button" tabindex="0" aria-label="Explore ${escapeHtml(n.name)}" aria-pressed="${idx === 0 ? 'true' : 'false'}">
+        <div class="arch-node-kicker">${escapeHtml(n.badge)}</div>
+        <div class="arch-node-name">${escapeHtml(n.name.split('. ')[1] || n.name)}</div>
+      </div>
+    `
+      )
+      .join('');
+
+    renderNodeDetail(nodes[0]);
+
+    container.querySelectorAll('.arch-node-card').forEach((card) => {
+      const selectNode = () => {
+        container.querySelectorAll('.arch-node-card').forEach((c) => {
+          c.classList.remove('active');
+          c.setAttribute('aria-pressed', 'false');
+        });
+        card.classList.add('active');
+        card.setAttribute('aria-pressed', 'true');
+        const nodeId = card.getAttribute('data-node-id');
+        const targetNode = nodes.find((n) => n.id === nodeId);
+        if (targetNode) renderNodeDetail(targetNode);
+      };
+
+      card.addEventListener('click', selectNode);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectNode();
+        }
+      });
+    });
+  }
+
+  // ==========================================================================
+  // 10. CYBERSECURITY TECHNICAL LAB
+  // ==========================================================================
+  function initSecurityLab() {
+    const labContainer = document.getElementById('security-lab-container');
+    const tools = data.securityLab?.tools || [];
+    if (!labContainer || tools.length === 0) return;
+
+    labContainer.innerHTML = tools
+      .map((tool) => {
+        if (tool.id === 'header-audit') {
+          return `
+            <div class="lab-tool-card reveal-item">
+              <div class="lab-tool-header">
+                <h3 class="lab-tool-title">${escapeHtml(tool.title)}</h3>
+                <span class="lab-tool-type">${escapeHtml(tool.type)}</span>
+              </div>
+              <p class="lab-tool-desc">${escapeHtml(tool.description)}</p>
+              <div class="lab-table-container">
+                <table class="lab-table" aria-label="Security Response Headers Audit Table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Header</th>
+                      <th scope="col">Implementation Status</th>
+                      <th scope="col">Defense Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${tool.headers
+                      .map(
+                        (h) => `
+                      <tr>
+                        <td style="font-family: monospace; color: var(--accent-light, #9b95ff);">${escapeHtml(h.name)}</td>
+                        <td><span class="${h.status.includes('Active') || h.status.includes('Enforced') ? 'status-tag-green' : 'status-tag-accent'}">${escapeHtml(h.status)}</span></td>
+                        <td>${escapeHtml(h.role)}</td>
+                      </tr>
+                    `
+                      )
+                      .join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        } else if (tool.id === 'stride-matrix') {
+          return `
+            <div class="lab-tool-card reveal-item">
+              <div class="lab-tool-header">
+                <h3 class="lab-tool-title">${escapeHtml(tool.title)}</h3>
+                <span class="lab-tool-type">${escapeHtml(tool.type)}</span>
+              </div>
+              <p class="lab-tool-desc">${escapeHtml(tool.description)}</p>
+              <div class="lab-table-container">
+                <table class="lab-table" aria-label="STRIDE Threat Vector and Security Countermeasure Matrix">
+                  <thead>
+                    <tr>
+                      <th scope="col">STRIDE</th>
+                      <th scope="col">Threat Vector</th>
+                      <th scope="col">Security Countermeasure</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${tool.threats
+                      .map(
+                        (t) => `
+                      <tr>
+                        <td style="font-family: monospace; font-weight: 700; color: #ffffff;">[${escapeHtml(t.letter)}]</td>
+                        <td style="color: #cbd5e1;">${escapeHtml(t.threat)}</td>
+                        <td>${escapeHtml(t.countermeasure)}</td>
+                      </tr>
+                    `
+                      )
+                      .join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        } else if (tool.id === 'zero-trust') {
+          return `
+            <div class="lab-tool-card reveal-item">
+              <div class="lab-tool-header">
+                <h3 class="lab-tool-title">${escapeHtml(tool.title)}</h3>
+                <span class="lab-tool-type">${escapeHtml(tool.type)}</span>
+              </div>
+              <p class="lab-tool-desc">${escapeHtml(tool.description)}</p>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                ${tool.principles
+                  .map(
+                    (p) => `
+                  <div style="background: rgba(7, 8, 12, 0.75); border: 1px solid var(--border-subtle, rgba(255,255,255,0.08)); padding: 12px 16px; border-radius: 8px;">
+                    <div style="font-family: monospace; font-size: 11.5px; color: var(--accent-light, #9b95ff); font-weight: 700; margin-bottom: 4px;">
+                      ✓ ${escapeHtml(p.title)}
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-muted, #7f8595); line-height: 1.45;">
+                      ${escapeHtml(p.detail)}
+                    </div>
+                  </div>
+                `
+                  )
+                  .join('')}
+              </div>
+            </div>
+          `;
+        }
+        return '';
+      })
+      .join('');
+  }
+
+  // ==========================================================================
+  // 11. PUBLIC GITHUB INTEGRATION (Graceful Offline Fallback & Session Caching)
+  // ==========================================================================
+  const GITHUB_CACHE_KEY = 'jatin_github_repos_v1';
+  const GITHUB_CACHE_TTL = 30 * 60 * 1000; // 30 minutes cache
+
+  async function initGithubShowcase() {
+    const container = document.getElementById('github-showcase-container');
+    if (!container) return;
+
+    const fallback = data.githubFallback?.publicRepos || [];
+
+    // Check cached session data first to prevent rate limiting and eliminate network latency
+    try {
+      const rawCache = sessionStorage.getItem(GITHUB_CACHE_KEY);
+      if (rawCache) {
+        const parsed = JSON.parse(rawCache);
+        if (parsed && parsed.timestamp && Date.now() - parsed.timestamp < GITHUB_CACHE_TTL && Array.isArray(parsed.repos)) {
+          renderRepos(parsed.repos);
+          return;
+        }
+      }
+    } catch {
+      // Storage unavailable or restricted
+    }
+
+    try {
+      const response = await fetch('https://api.github.com/users/jatinsingh82/repos?sort=updated&per_page=4', {
+        headers: { Accept: 'application/vnd.github.v3+json' },
+        signal: AbortSignal.timeout(3000)
+      });
+
+      if (!response.ok) throw new Error('GitHub API response not ok');
+      const repos = await response.json();
+      if (!Array.isArray(repos) || repos.length === 0) throw new Error('No repos returned');
+
+      const mappedRepos = repos.map((r) => ({
+        name: r.name,
+        description: r.description || 'Public engineering repository.',
+        language: r.language || 'Codebase',
+        url: r.html_url,
+        stars: r.stargazers_count,
+        forks: r.forks_count,
+        topics: r.topics || []
+      }));
+
+      try {
+        sessionStorage.setItem(
+          GITHUB_CACHE_KEY,
+          JSON.stringify({
+            timestamp: Date.now(),
+            repos: mappedRepos
+          })
+        );
+      } catch {
+        // Ignore session storage errors
+      }
+
+      renderRepos(mappedRepos);
+    } catch {
+      // Graceful offline fallback
+      renderRepos(fallback);
+    }
+
+    function renderRepos(reposList) {
+      container.innerHTML = reposList
+        .map(
+          (repo) => `
+        <a href="${sanitizeUrl(repo.url)}" target="_blank" rel="noopener noreferrer" class="github-repo-card reveal-item" aria-label="View repository ${escapeHtml(repo.name)} on GitHub">
+          <div class="repo-card-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+              <path d="M9 18c-4.51 2-5-2-7-2"></path>
+            </svg>
+            ${escapeHtml(repo.name)}
+          </div>
+          <div class="repo-card-desc">${escapeHtml(repo.description)}</div>
+          <div class="repo-meta-row">
+            <span style="display: inline-flex; align-items: center; gap: 6px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-light, #9b95ff);"></span>
+              ${escapeHtml(repo.language)}
+            </span>
+            <span style="color: var(--accent-light, #9b95ff); font-weight: 600;">Explore →</span>
+          </div>
+        </a>
+      `
+        )
+        .join('');
+    }
+  }
+
+  // ==========================================================================
+  // 12. COMMAND PALETTE (CMD+K / CTRL+K Developer Modal)
+  // ==========================================================================
+  const commandPalette = document.getElementById('command-palette');
+  const commandInput = document.getElementById('command-input');
+  const commandResultsList = document.getElementById('command-results');
+  const cmdHintPill = document.getElementById('cmd-hint-pill');
+
+  const COMMAND_ITEMS = [
+    { label: 'Go to Home', section: 'hero', shortcut: 'H', category: 'Navigation' },
+    { label: 'Go to Professional Overview', section: 'about', shortcut: 'A', category: 'Navigation' },
+    { label: 'Go to Experience Timeline', section: 'experience', shortcut: 'E', category: 'Navigation' },
+    { label: 'Go to Skills Matrix', section: 'skills', shortcut: 'S', category: 'Navigation' },
+    { label: 'Go to Projects Showcase', section: 'projects', shortcut: 'P', category: 'Navigation' },
+    { label: 'Go to Systems Architecture', section: 'architecture', shortcut: 'R', category: 'Navigation' },
+    { label: 'Go to Security Lab', section: 'security-lab', shortcut: 'L', category: 'Navigation' },
+    { label: 'Go to Certifications', section: 'certifications', shortcut: 'C', category: 'Navigation' },
+    { label: 'Go to Resume & Education', section: 'resume', shortcut: 'D', category: 'Navigation' },
+    { label: 'Go to Contact', section: 'contact', shortcut: 'M', category: 'Navigation' },
+    { label: 'Open GitHub Profile', action: () => window.open('https://github.com/jatinsingh82', '_blank', 'noopener,noreferrer'), shortcut: 'G', category: 'External Links' },
+    { label: 'Open LinkedIn Profile', action: () => window.open('https://www.linkedin.com/in/jatinsingh82/', '_blank', 'noopener,noreferrer'), shortcut: 'I', category: 'External Links' },
+    { label: 'Open Cyber Terminal Easter Egg', action: () => openTerminal(), shortcut: '~', category: 'Developer Tools' },
+    { label: 'Toggle Light / Dark Theme', action: () => toggleTheme(), shortcut: 'T', category: 'Appearance' }
+  ];
+
+  function openCommandPalette() {
+    if (!commandPalette) return;
+    commandPalette.classList.add('open');
+    commandPalette.setAttribute('aria-hidden', 'false');
+    if (commandInput) {
+      commandInput.value = '';
+      commandInput.setAttribute('aria-expanded', 'true');
+    }
+    renderCommands('');
+    document.body.style.overflow = 'hidden';
+    activateModal(commandPalette, closeCommandPalette, commandInput);
+  }
+
+  function closeCommandPalette() {
+    if (!commandPalette) return;
+    commandPalette.classList.remove('open');
+    commandPalette.setAttribute('aria-hidden', 'true');
+    if (commandInput) {
+      commandInput.setAttribute('aria-expanded', 'false');
+      commandInput.removeAttribute('aria-activedescendant');
+    }
+    document.body.style.overflow = '';
+    deactivateModal(commandPalette);
+  }
+
+  function renderCommands(query = '') {
+    if (!commandResultsList) return;
+    const cleanQuery = query.toLowerCase().trim();
+    const filtered = COMMAND_ITEMS.filter((item) =>
+      item.label.toLowerCase().includes(cleanQuery) || item.category.toLowerCase().includes(cleanQuery)
+    );
+
+    if (filtered.length === 0) {
+      commandResultsList.innerHTML = `
+        <li style="padding: 20px; text-align: center; color: var(--text-muted, #7f8595); font-size: 13px;" role="presentation">
+          No matching commands found.
+        </li>
+      `;
+      if (commandInput) commandInput.removeAttribute('aria-activedescendant');
+      return;
+    }
+
+    commandResultsList.innerHTML = filtered
+      .map(
+        (cmd, index) => `
+      <li id="cmd-opt-${index}" class="command-item ${index === 0 ? 'focused' : ''}" data-cmd-index="${index}" role="option" aria-selected="${index === 0 ? 'true' : 'false'}" tabindex="-1">
+        <div class="command-item-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+          <span>${escapeHtml(cmd.label)}</span>
+        </div>
+        <span class="command-item-shortcut">${escapeHtml(cmd.shortcut)}</span>
+      </li>
+    `
+      )
+      .join('');
+
+    if (commandInput) {
+      commandInput.setAttribute('aria-activedescendant', 'cmd-opt-0');
+    }
+
+    commandResultsList.querySelectorAll('.command-item').forEach((li) => {
+      li.addEventListener('click', () => {
+        const idx = parseInt(li.getAttribute('data-cmd-index'), 10);
+        executeCommand(filtered[idx]);
+      });
+    });
+  }
+
+  function executeCommand(cmd) {
+    closeCommandPalette();
+    if (cmd.section) {
+      const target = document.getElementById(cmd.section);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (cmd.action) {
+      cmd.action();
+    }
+  }
+
+  if (commandInput) {
+    commandInput.addEventListener('input', (e) => {
+      renderCommands(e.target.value);
+    });
+
+    commandInput.addEventListener('keydown', (e) => {
+      const items = Array.from(commandResultsList?.querySelectorAll('.command-item') || []);
+      const currentIndex = items.findIndex((it) => it.classList.contains('focused'));
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (items.length > 0) {
+          const nextIndex = (currentIndex + 1) % items.length;
+          items.forEach((it, idx) => {
+            const isFoc = idx === nextIndex;
+            it.classList.toggle('focused', isFoc);
+            it.setAttribute('aria-selected', isFoc ? 'true' : 'false');
+            if (isFoc) {
+              it.scrollIntoView({ block: 'nearest' });
+              commandInput.setAttribute('aria-activedescendant', it.id || `cmd-opt-${idx}`);
+            }
+          });
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (items.length > 0) {
+          const prevIndex = (currentIndex - 1 + items.length) % items.length;
+          items.forEach((it, idx) => {
+            const isFoc = idx === prevIndex;
+            it.classList.toggle('focused', isFoc);
+            it.setAttribute('aria-selected', isFoc ? 'true' : 'false');
+            if (isFoc) {
+              it.scrollIntoView({ block: 'nearest' });
+              commandInput.setAttribute('aria-activedescendant', it.id || `cmd-opt-${idx}`);
+            }
+          });
+        }
+      } else if (e.key === 'Escape') {
+        closeCommandPalette();
+      } else if (e.key === 'Enter') {
+        const focused = commandResultsList?.querySelector('.command-item.focused') || commandResultsList?.querySelector('.command-item');
+        if (focused) {
+          const idx = parseInt(focused.getAttribute('data-cmd-index'), 10);
+          const cleanQuery = commandInput.value.toLowerCase().trim();
+          const filtered = COMMAND_ITEMS.filter((item) =>
+            item.label.toLowerCase().includes(cleanQuery) || item.category.toLowerCase().includes(cleanQuery)
+          );
+          if (filtered[idx]) executeCommand(filtered[idx]);
+        }
+      }
+    });
+  }
+
+  if (commandPalette) {
+    commandPalette.addEventListener('click', (e) => {
+      if (e.target === commandPalette) closeCommandPalette();
+    });
+  }
+
+  if (cmdHintPill) {
+    cmdHintPill.addEventListener('click', openCommandPalette);
+  }
+
+  // Keyboard shortcut: CMD+K or CTRL+K
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+      e.preventDefault();
+      if (commandPalette?.classList.contains('open')) {
+        closeCommandPalette();
+      } else {
+        openCommandPalette();
+      }
+    }
+    // Terminal shortcut: Backtick `~` when not typing in an input
+    if (e.key === '`' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+      e.preventDefault();
+      openTerminal();
+    }
+  });
+
+  // ==========================================================================
+  // 13. CYBER TERMINAL EASTER EGG (Factual Terminal Simulation)
+  // ==========================================================================
+  const terminalModal = document.getElementById('terminal-modal');
+  const terminalInput = document.getElementById('terminal-input');
+  const terminalOutput = document.getElementById('terminal-output');
+  const terminalCloseDot = document.getElementById('terminal-close-dot');
+
+  function openTerminal() {
+    if (!terminalModal) return;
+    terminalModal.classList.add('open');
+    terminalModal.setAttribute('aria-hidden', 'false');
+    if (terminalInput) {
+      terminalInput.value = '';
+    }
+    if (terminalOutput && !terminalOutput.dataset.initialized) {
+      terminalOutput.innerHTML = `[AUTHENTICATED TERMINAL SESSION]
+Host: jatin-cyber-node
+Identity: Jatin Singh (Cybersecurity Analyst)
+Specialization: Cyber Strategy &amp; Transformation
+
+Type 'help' for available diagnostic commands.`;
+      terminalOutput.dataset.initialized = 'true';
+    }
+    document.body.style.overflow = 'hidden';
+    activateModal(terminalModal, closeTerminal, terminalInput);
+  }
+
+  function closeTerminal() {
+    if (!terminalModal) return;
+    terminalModal.classList.remove('open');
+    terminalModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    deactivateModal(terminalModal);
+  }
+
+  if (terminalCloseDot) {
+    terminalCloseDot.addEventListener('click', closeTerminal);
+  }
+
+  if (terminalModal) {
+    terminalModal.addEventListener('click', (e) => {
+      if (e.target === terminalModal) closeTerminal();
+    });
+  }
+
+  if (terminalInput) {
+    terminalInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const cmd = terminalInput.value.trim().toLowerCase();
+        handleTerminalCommand(cmd);
+        terminalInput.value = '';
+      } else if (e.key === 'Escape') {
+        closeTerminal();
+      }
+    });
+  }
+
+  function handleTerminalCommand(cmd) {
+    if (!terminalOutput) return;
+
+    let response;
+    switch (cmd) {
+      case 'help':
+        response = `Available commands:
+  whoami       - Display identity and specialization
+  role         - Professional positioning and domains
+  skills       - Factual cybersecurity competencies
+  projects     - Featured technical and web initiatives
+  education    - Degree and university credentials
+  contact      - Direct communication coordinates
+  clear        - Clear terminal screen
+  exit         - Close terminal session`;
+        break;
+      case 'whoami':
+        response = `Jatin Singh — Cybersecurity Analyst
+Specialization: Cyber Strategy & Transformation
+Academic: B.Tech in Computer Science & Engineering (GLA University, Mathura)`;
+        break;
+      case 'role':
+        response = `Cybersecurity Analyst | Cyber Strategy & Transformation
+Key Focus: NIST CSF, ISO/IEC 27001, STRIDE Threat Modeling, Systems Architecture, and Enterprise Risk Governance.`;
+        break;
+      case 'skills':
+        response = `Domains: Cybersecurity, Cloud, Networking, Programming, DevOps, Systems.
+Highlights: NIST CSF, ISO 27001, IAM, Vulnerability Assessment, Java, C++, JavaScript, Linux, TLS.`;
+        break;
+      case 'projects':
+        response = `Featured Projects:
+  1. Rajdeep Enterprises Digital Platform (Commercial Web Platform)
+  2. Job Portal Application (Full-Stack MERN Architecture)
+  3. Weather Website (Real-time Meteorological Web Platform)`;
+        break;
+      case 'education':
+        response = `Degree: B.Tech in Computer Science & Engineering
+Institution: GLA University, Mathura, India
+Core Focus: Systems Engineering, Network Security, and Information Security`;
+        break;
+      case 'contact':
+        response = `Email: jatinthakur8273@gmail.com
+LinkedIn: https://www.linkedin.com/in/jatinsingh82/
+GitHub: https://github.com/jatinsingh82`;
+        break;
+      case 'clear':
+        terminalOutput.innerHTML = '';
+        return;
+      case 'exit':
+      case 'quit':
+        closeTerminal();
+        return;
+      case '':
+        return;
+      default:
+        response = `command not recognized: '${escapeHtml(cmd)}'. Type 'help' for available commands.`;
+    }
+
+    terminalOutput.innerHTML += `\n\n<span style="color: var(--accent-light, #9b95ff);">jatin@cyber-terminal:~$</span> ${escapeHtml(cmd)}\n${escapeHtml(response)}`;
+    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+  }
+
+  // ==========================================================================
+  // 14. SUBTLE CUSTOM CURSOR (Desktop Only)
+  // ==========================================================================
+  function initCustomCursor() {
+    if (isReducedMotion || window.innerWidth < 1024 || 'ontouchstart' in window) return;
+
+    const dot = document.querySelector('.custom-cursor-dot');
+    const ring = document.querySelector('.custom-cursor-ring');
+    if (!dot || !ring) return;
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let isRingLoopActive = false;
+
+    function renderRing() {
+      if (document.hidden) {
+        isRingLoopActive = false;
+        return;
+      }
+
+      const dx = mouseX - ringX;
+      const dy = mouseY - ringY;
+
+      ringX += dx * 0.18;
+      ringY += dy * 0.18;
+      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
+
+      // Sleep loop once ring has caught up with cursor to save CPU cycles
+      if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+        requestAnimationFrame(renderRing);
+      } else {
+        isRingLoopActive = false;
+      }
+    }
+
+    function wakeRingLoop() {
+      if (!isRingLoopActive && !document.hidden) {
+        isRingLoopActive = true;
+        requestAnimationFrame(renderRing);
+      }
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.opacity = '1';
+      ring.style.opacity = '1';
+      dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+      wakeRingLoop();
+    }, { passive: true });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isRingLoopActive = false;
+      }
+    });
+
+    const hoverSelectors = 'a, button, .interactive-node, .skill-card, .cert-card, .arch-node-card, input, [role="button"]';
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest(hoverSelectors)) {
+        ring.classList.add('active');
+      }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest(hoverSelectors)) {
+        ring.classList.remove('active');
+      }
+    });
+  }
+
+  // ==========================================================================
+  // 15. CONTACT FORM HANDLING (Direct Mailto Client Launch, No Fake Submission)
+  // ==========================================================================
+  const contactForm = document.getElementById('contact-form');
+  const formStatus = document.getElementById('form-status');
+
+  if (contactForm) {
+    const nameInput = document.getElementById('form-name');
+    const emailInput = document.getElementById('form-email');
+    const messageInput = document.getElementById('form-message');
+
+    // Real-time clearance of error flags when the user corrects input
+    [nameInput, emailInput, messageInput].forEach((input) => {
+      if (input) {
+        input.addEventListener('input', () => {
+          if (input.getAttribute('aria-invalid') === 'true') {
+            input.removeAttribute('aria-invalid');
+            if (formStatus && formStatus.classList.contains('error')) {
+              formStatus.textContent = '';
+              formStatus.className = 'form-status';
+            }
+          }
+        });
+      }
+    });
+
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const message = messageInput ? messageInput.value.trim() : '';
+
+      if (nameInput) nameInput.removeAttribute('aria-invalid');
+      if (emailInput) emailInput.removeAttribute('aria-invalid');
+      if (messageInput) messageInput.removeAttribute('aria-invalid');
+
+      if (!name) {
+        if (nameInput) {
+          nameInput.setAttribute('aria-invalid', 'true');
+          nameInput.focus();
+        }
+        showFormStatus('Please enter your full name.', 'error');
+        return;
+      }
+
+      if (!email) {
+        if (emailInput) {
+          emailInput.setAttribute('aria-invalid', 'true');
+          emailInput.focus();
+        }
+        showFormStatus('Please enter your email address.', 'error');
+        return;
+      }
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        if (emailInput) {
+          emailInput.setAttribute('aria-invalid', 'true');
+          emailInput.focus();
+        }
+        showFormStatus('Please enter a valid email address (e.g. name@example.com).', 'error');
+        return;
+      }
+
+      if (!message) {
+        if (messageInput) {
+          messageInput.setAttribute('aria-invalid', 'true');
+          messageInput.focus();
+        }
+        showFormStatus('Please describe your inquiry or collaboration scope.', 'error');
+        return;
+      }
+
+      const subject = encodeURIComponent(`Cybersecurity Inquiry from ${name}`);
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+
+      // Clear, honest status indicating the default email client is being launched
+      showFormStatus('Opening your default email client with your pre-filled message addressed to jatinthakur8273@gmail.com...', 'success');
+
+      // Direct client launch without artificial delay or fake server simulation
+      window.location.href = `mailto:jatinthakur8273@gmail.com?subject=${subject}&body=${body}`;
+    });
+  }
+
+  function showFormStatus(msg, type) {
+    if (!formStatus) return;
+    formStatus.textContent = msg;
+    formStatus.className = `form-status ${type}`;
+  }
+
+  // ==========================================================================
+  // 16. RESUME DOWNLOAD & MODAL
+  // ==========================================================================
+  const resumeBtn = document.getElementById('download-resume-btn');
+  const heroResumeBtn = document.getElementById('hero-resume-btn');
+  const resumeModal = document.getElementById('resume-modal');
+  const resumeModalClose = document.getElementById('resume-modal-close');
+
+  function openResumeModal(e) {
+    if (e) e.preventDefault();
+    if (resumeModal) {
+      resumeModal.classList.add('active');
+      resumeModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      activateModal(resumeModal, closeResumeModal, resumeModalClose);
+    }
+  }
+
+  function closeResumeModal() {
+    if (resumeModal) {
+      resumeModal.classList.remove('active');
+      resumeModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      deactivateModal(resumeModal);
+    }
+  }
+
+  if (resumeBtn) resumeBtn.addEventListener('click', openResumeModal);
+  if (heroResumeBtn) heroResumeBtn.addEventListener('click', openResumeModal);
+
+  if (resumeModalClose) {
+    resumeModalClose.addEventListener('click', closeResumeModal);
+  }
+  if (resumeModal) {
+    resumeModal.addEventListener('click', (e) => {
+      if (e.target === resumeModal) closeResumeModal();
+    });
+  }
+
+  // Back to top button
+  const backToTopBtn = document.getElementById('back-to-top');
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // ==========================================================================
+  // INITIALIZATION
+  // ==========================================================================
+  window.addEventListener('DOMContentLoaded', () => {
+    initScrollReveal();
+    initExperienceExpansion();
+    initArchitectureExplorer();
+    initSecurityLab();
+    initGithubShowcase();
+    initCustomCursor();
+  });
+})();

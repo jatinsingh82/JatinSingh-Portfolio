@@ -1,0 +1,489 @@
+/**
+ * Jatin Singh — Portfolio Data Layer
+ * Strict authenticity: factual information only, no fabricated metrics or fake roles.
+ */
+
+window.PORTFOLIO_DATA = {
+  profile: {
+    name: "Jatin Singh",
+    role: "Cybersecurity Analyst",
+    specialization: "Cyber Strategy & Transformation",
+    positioning: "Cybersecurity | Cyber Strategy & Transformation | Technology",
+    summary: "Cybersecurity professional with a Computer Science Engineering degree from GLA University, Mathura. Experienced in enterprise cyber posture assessment, threat modeling, security architecture evaluation, and risk transformation.",
+    email: "jatinthakur8273@gmail.com",
+    github: "https://github.com/jatinsingh82",
+    linkedin: "https://www.linkedin.com/in/jatinsingh82/",
+    location: "India",
+    education: {
+      degree: "B.Tech in Computer Science & Engineering",
+      institution: "GLA University, Mathura",
+      focus: "Systems Engineering, Network Protocols, and Information Security",
+      highlights: [
+        "Core Computer Science Engineering",
+        "Systems Architecture & Network Protocols",
+        "Data Structures & Algorithmic Complexity"
+      ]
+    },
+    infoPanel: [
+      { label: "ROLE", value: "Cybersecurity Analyst" },
+      { label: "DOMAIN", value: "Cyber Strategy & Transformation" },
+      { label: "TECHNICAL FOCUS", value: "Threat Modeling, NIST CSF, ISO/IEC 27001, Systems Security" },
+      { label: "CURRENT INTERESTS", value: "Cloud Security Architecture, Zero-Trust Governance, Resilient Systems" }
+    ]
+  },
+
+  experience: [
+    {
+      id: "exp-1",
+      role: "Cybersecurity Analyst",
+      specialization: "Cyber Strategy & Transformation",
+      company: "Deloitte",
+      location: "India",
+      duration: "Present",
+      isCurrent: true,
+      summary: "Contributing to cyber posture transformation initiatives, enterprise risk assessments, and secure systems architecture reviews.",
+      responsibilities: [
+        "Evaluate organizational security postures against NIST Cybersecurity Framework (CSF) and ISO/IEC 27001 control standards.",
+        "Conduct threat modeling and attack surface mapping across web applications, cloud environments, and internal networks.",
+        "Assist in designing Identity and Access Management (IAM) governance policies enforcing least-privilege principles and zero-trust concepts.",
+        "Collaborate between technical engineering teams and risk leaders to prioritize vulnerability remediation roadmaps."
+      ],
+      deepDive: {
+        frameworks: "NIST CSF 2.0 (Identify, Protect, Detect, Respond, Recover, Govern) & ISO/IEC 27001:2022 ISMS Controls",
+        methodology: "STRIDE Threat Modeling, Attack Surface Decomposition, and Risk-Weighted Control Remediation",
+        impact: "Bridging the gap between low-level technical vulnerabilities and executive enterprise risk posture."
+      },
+      technologies: ["Cyber Strategy", "Threat Modeling", "NIST CSF", "ISO 27001", "IAM Governance", "Risk Assessment", "Zero Trust"]
+    }
+  ],
+
+  skills: {
+    categories: [
+      { id: "all", name: "All Competencies" },
+      { id: "cybersecurity", name: "Cybersecurity" },
+      { id: "cloud", name: "Cloud" },
+      { id: "networking", name: "Networking" },
+      { id: "programming", name: "Programming" },
+      { id: "devops", name: "DevOps & Tools" },
+      { id: "databases", name: "Databases & Systems" },
+      { id: "security-tools", name: "Security Tools" }
+    ],
+    items: [
+      // Cybersecurity
+      {
+        name: "Cyber Strategy & Transformation",
+        category: "cybersecurity",
+        description: "Aligning organizational cyber posture with strategic business goals, threat landscapes, and regulatory compliance."
+      },
+      {
+        name: "NIST Cybersecurity Framework (CSF)",
+        category: "cybersecurity",
+        description: "Implementing core functions: Govern, Identify, Protect, Detect, Respond, and Recover across enterprise systems."
+      },
+      {
+        name: "ISO/IEC 27001 Standards",
+        category: "cybersecurity",
+        description: "Establishing, auditing, and maintaining Information Security Management System (ISMS) risk governance controls."
+      },
+      {
+        name: "Threat Modeling (STRIDE)",
+        category: "cybersecurity",
+        description: "Systematic architectural threat decomposition analyzing Spoofing, Tampering, Repudiation, Info Disclosure, DoS, and Elevation of Privilege."
+      },
+      {
+        name: "Identity & Access Management (IAM)",
+        category: "cybersecurity",
+        description: "Enforcing Role-Based Access Control (RBAC), Least Privilege, and Zero Trust authentication protocols."
+      },
+      {
+        name: "Vulnerability Assessment",
+        category: "cybersecurity",
+        description: "Systematic flaw discovery, CVSS 3.1 scoring, exposure triage, and strategic remediation workflows."
+      },
+      {
+        name: "OWASP Top 10 Web Defense",
+        category: "cybersecurity",
+        description: "Architectural countermeasures against Broken Access Control, Injection, Cryptographic Failures, and SSRF."
+      },
+
+      // Cloud
+      {
+        name: "Cloud Security Architecture",
+        category: "cloud",
+        description: "Evaluating shared responsibility models, cloud asset inventories, and multi-tenant infrastructure posture."
+      },
+      {
+        name: "Cloud IAM & Governance",
+        category: "cloud",
+        description: "Hardening cloud identity boundaries, service account scopes, and ephemeral token delegation."
+      },
+      {
+        name: "Virtual Private Cloud (VPC)",
+        category: "cloud",
+        description: "Subnet segregation, security groups, network access control lists (NACLs), and traffic flow isolation."
+      },
+
+      // Networking
+      {
+        name: "TCP/IP & OSI Architecture",
+        category: "networking",
+        description: "In-depth packet flow analysis across application, transport, network, and data link protocol layers."
+      },
+      {
+        name: "DNS, TLS & Cryptographic Protocols",
+        category: "networking",
+        description: "Securing end-to-end communication channels with TLS 1.3, public key cryptography, and DNSSEC."
+      },
+      {
+        name: "Firewalls & Network Segmentation",
+        category: "networking",
+        description: "Demilitarized zones (DMZ), micro-segmentation, packet filtering, and stateful traffic inspection."
+      },
+
+      // Programming
+      {
+        name: "Java (Core & Object-Oriented)",
+        category: "programming",
+        description: "Enterprise software development, memory safety considerations, and multi-threaded systems architecture."
+      },
+      {
+        name: "C++ (Systems & Algorithms)",
+        category: "programming",
+        description: "High-performance computational algorithms, memory management, and pointers/data structures."
+      },
+      {
+        name: "JavaScript (ES6+ & Asynchronous)",
+        category: "programming",
+        description: "Modern asynchronous execution, client-side event loops, API integration, and DOM security."
+      },
+      {
+        name: "HTML5 & Semantic Engineering",
+        category: "programming",
+        description: "Standardized document structures, accessibility standards (WCAG), and secure DOM hierarchy."
+      },
+      {
+        name: "CSS3 & Responsive Layouts",
+        category: "programming",
+        description: "CSS Grid, Flexbox, hardware-accelerated animations, and responsive mobile architecture."
+      },
+
+      // DevOps & Tools
+      {
+        name: "Linux Systems Administration",
+        category: "devops",
+        description: "Kernel permissions, POSIX access controls, systemd service management, and bash shell scripting."
+      },
+      {
+        name: "Git & GitHub Version Control",
+        category: "devops",
+        description: "Cryptographic commit tracking, pull request code reviews, branch governance, and secure CI pipelines."
+      },
+      {
+        name: "Bash & Automation Scripting",
+        category: "devops",
+        description: "Automating routine administration tasks, configuration validation, and diagnostic checks."
+      },
+
+      // Databases & Systems
+      {
+        name: "Relational Database Concepts",
+        category: "databases",
+        description: "Schema design, relational integrity, ACID compliance, and SQL injection defense."
+      },
+      {
+        name: "Data Structures & Complexity Analysis",
+        category: "databases",
+        description: "Big-O algorithmic runtime and space optimization across trees, graphs, heaps, and arrays."
+      },
+
+      // Security Tools
+      {
+        name: "Wireshark Packet Analysis",
+        category: "security-tools",
+        description: "Deep packet capture inspection, protocol anomaly triage, and plaintext credential discovery."
+      },
+      {
+        name: "Nmap Network Scanner",
+        category: "security-tools",
+        description: "Host discovery, port enumeration, banner grabbing, and network service fingerprinting."
+      },
+      {
+        name: "Burp Suite / Web Proxy Inspection",
+        category: "security-tools",
+        description: "HTTP/HTTPS request tampering, header inspection, and web vulnerability analysis."
+      }
+    ]
+  },
+
+  projects: [
+    {
+      id: "rajdeep",
+      title: "Rajdeep Enterprises Digital Platform",
+      category: "web",
+      categoryLabel: "Web Platform & Client Architecture",
+      isFeatured: true,
+      summary: "Commercial web platform engineered for Rajdeep Enterprises, delivering a streamlined, highly responsive digital brand presence with accessible user pathways.",
+      problem: "Rajdeep Enterprises required a modern digital presence capable of showcasing offerings cleanly across desktop, tablet, and mobile with fluid responsiveness, zero framework overhead, and hardened client-side validation.",
+      solution: "Engineered a lightweight, single-tier client architecture using semantic HTML5, CSS3, and modular vanilla JavaScript. Designed zero-dependency UI components with semantic markup and rigorous accessibility.",
+      architectureDescription: "Client-side responsive architecture with high-compression asset distribution, semantic document tree, and hardened input sanitization.",
+      architectureSteps: [
+        { label: "USER / CLIENT", desc: "Accesses digital portal over HTTPS on any mobile, tablet, or desktop browser." },
+        { label: "PRESENTATION LAYER", desc: "Clean semantic HTML5 and CSS3 Grid/Flexbox with hardware acceleration." },
+        { label: "CLIENT SECURITY", desc: "Hardened form validation, input sanitization, and strict rel='noopener noreferrer' outbound controls." },
+        { label: "ASSET DELIVERY", desc: "Optimized modern asset delivery with high-efficiency AVIF and WebP compression." }
+      ],
+      technologies: ["HTML5", "CSS3", "JavaScript", "Responsive Design", "Security Hardening"],
+      myContribution: "Sole Frontend Engineer: designed responsive system layout, implemented client-side interactivity, and optimized for speed, security, and accessibility.",
+      implementation: "Built completely from the ground up using clean semantic markup and modern CSS variables for theme consistency without relying on heavy third-party JavaScript runtimes.",
+      result: "Delivered a fast, fully responsive web application with clean semantic structure, robust client-side validation, and polished commercial brand representation.",
+      image: "src/assets/images/project_rajdeep_preview_1790182635150.webp",
+      github: "https://github.com/jatinsingh82/Rajdeep-Enterprises",
+      liveDemo: null
+    },
+    {
+      id: "job-portal",
+      title: "Job Portal Application",
+      category: "web",
+      categoryLabel: "Full-Stack MERN Application",
+      isFeatured: false,
+      summary: "Full-stack job portal web application handling user authentication, job postings, interactive search filters, and seamless recruiter/applicant workflows.",
+      problem: "Online recruitment platforms require robust role-based workflows, protected routes for applicants and recruiters, efficient database queries, and a responsive interface.",
+      solution: "Built a full-stack MERN application handling authenticated user workflows, RESTful API integrations, MongoDB database schemas, and responsive UI components.",
+      architectureDescription: "Full-stack decoupled architecture with Node.js/Express API layer, MongoDB data persistence, and React frontend interface.",
+      architectureSteps: [
+        { label: "AUTHENTICATION", desc: "Secure user signup and login with role separation for candidates and employers." },
+        { label: "REST APIS", desc: "Express.js endpoints handling job creation, search queries, filter parsing, and application submission." },
+        { label: "DATABASE LAYER", desc: "MongoDB schemas optimized for job listings, user profiles, and application statuses." },
+        { label: "FRONTEND UI", desc: "Interactive frontend interface with dynamic job filtering, search, and responsive cards." }
+      ],
+      technologies: ["React", "Node.js", "Express.js", "MongoDB", "REST APIs", "JavaScript"],
+      myContribution: "Full-Stack Developer: built REST APIs, designed MongoDB schemas, implemented user authentication, and optimized frontend-backend integration.",
+      implementation: "Developed with React and Express handling stateful search filtering, RESTful endpoints, and backend database integration with performance checks.",
+      result: "Successfully created an intuitive, responsive job management portal with robust user authentication, search filters, and smooth database operations.",
+      image: "src/assets/images/datacenter_infra_1790183667384.webp",
+      github: "https://github.com/jatinsingh82/Job-portal.git",
+      liveDemo: null
+    },
+    {
+      id: "weather",
+      title: "Weather Website",
+      category: "web",
+      categoryLabel: "Real-Time Weather Web Application",
+      isFeatured: false,
+      summary: "Real-time meteorological web application providing live weather conditions, atmospheric telemetry, responsive design, and resilient API consumption.",
+      problem: "Public weather services require seamless real-time querying, rapid data parsing, graceful error handling for network latency, and responsive visualizations across all devices.",
+      solution: "Engineered an asynchronous web application consuming real-time weather APIs with debounced search, responsive telemetry cards, error boundary handling, and clean visual status indicators.",
+      architectureDescription: "Decoupled frontend dashboard communicating with external REST weather endpoints via asynchronous promise chains and stateful UI updates.",
+      architectureSteps: [
+        { label: "USER SEARCH", desc: "Queries target city or location with input validation and debounced event dispatching." },
+        { label: "LIVE API FETCH", desc: "Dispatches HTTP requests with timeout safety, error boundaries, and abort handles." },
+        { label: "DATA PARSING", desc: "Parses JSON telemetry and caches coordinates in memory for instant reuse." },
+        { label: "UI RENDER", desc: "Renders metric cards, forecast telemetry, and weather icons with graceful error fallbacks." }
+      ],
+      technologies: ["JavaScript (ES6+)", "RESTful APIs", "HTML5", "CSS3", "Async / Await", "Vercel"],
+      myContribution: "Designed data fetching pipeline, implemented async state management, crafted responsive dashboard visualization, and deployed live application.",
+      implementation: "Clean ES6+ utilizing async/await, modular functions, and CSS grid for dashboard telemetry cards deployed on Vercel.",
+      result: "Resilient real-time weather querying with reliable error fallback notifications and zero UI freezes during slow network conditions.",
+      image: "src/assets/images/cloud_architecture_1790183695850.webp",
+      github: "https://github.com/jatinsingh82",
+      liveDemo: "https://weather-realtime-website.vercel.app/"
+    }
+  ],
+
+  certifications: [
+    {
+      id: "cert-1",
+      title: "Oracle Cloud Infrastructure Foundations",
+      issuer: "Oracle",
+      description: "Foundational cloud architecture concepts, core OCI compute, storage, networking, and security governance principles."
+    },
+    {
+      id: "cert-2",
+      title: "Oracle Cloud Infrastructure DevOps",
+      issuer: "Oracle",
+      description: "Continuous integration, deployment automation, infrastructure as code, and cloud operational workflows."
+    },
+    {
+      id: "cert-3",
+      title: "CCNA Course Series: Introduction to Networks, Enterprise Networking, Security, and Automation",
+      issuer: "Cisco Networking Academy",
+      description: "Enterprise networking fundamentals, IP addressing, routing and switching, network security, and infrastructure automation."
+    },
+    {
+      id: "cert-4",
+      title: "Introduction to Cybersecurity",
+      issuer: "Cisco Networking Academy",
+      description: "Core cybersecurity concepts, threat landscapes, defense-in-depth principles, and data confidentiality standards."
+    },
+    {
+      id: "cert-5",
+      title: "Python Essentials 1 & Python Essentials 2",
+      issuer: "Cisco Networking Academy",
+      description: "Python programming fundamentals, data structures, algorithms, object-oriented design, and systems automation."
+    }
+  ],
+
+  frameworksAndKnowledgeAreas: [
+    {
+      name: "NIST Cybersecurity Framework (CSF)",
+      category: "Security Framework",
+      description: "Enterprise security posture evaluation across Govern, Identify, Protect, Detect, Respond, and Recover core functions."
+    },
+    {
+      name: "ISO/IEC 27001",
+      category: "Security Standard",
+      description: "Information Security Management System (ISMS) risk governance controls and operational policies."
+    },
+    {
+      name: "STRIDE Threat Modeling",
+      category: "Methodology",
+      description: "Systematic architectural threat decomposition analyzing spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege."
+    },
+    {
+      name: "Systems Defense & Zero Trust",
+      category: "Architecture",
+      description: "Defense-in-depth principles, least privilege enforcement, and continuous verification controls."
+    }
+  ],
+
+  // Interactive Architecture Nodes
+  architecture: {
+    title: "End-to-End Enterprise Cyber & Systems Architecture",
+    subtitle: "Interactive conceptual model demonstrating layered defense architecture across client, network, application, governance, and infrastructure layers.",
+    nodes: [
+      {
+        id: "client",
+        name: "01. Client & Browser Layer",
+        badge: "Edge Security",
+        summary: "The initial user trust boundary operating within modern web browsers.",
+        controls: [
+          "Reference: Content Security Policy (CSP) restricting unauthorized script execution",
+          "Sanitized DOM rendering preventing Cross-Site Scripting (XSS)",
+          "Secure Cookie attributes (SameSite=Strict, HttpOnly, Secure)",
+          "Reference: Subresource Integrity (SRI) for asset hash verification"
+        ]
+      },
+      {
+        id: "network",
+        name: "02. Network & Transport Layer",
+        badge: "Transport Defense",
+        summary: "Encrypted communications conduits routing telemetry between client and endpoints.",
+        controls: [
+          "Reference: TLS 1.3 protocol configuration with modern cipher suites (PFS)",
+          "Reference: HSTS (HTTP Strict Transport Security) with preloading",
+          "Reference: CORS origin domain restrictions and method limits",
+          "Reference: Rate limiting and DDoS mitigation at network ingress"
+        ]
+      },
+      {
+        id: "application",
+        name: "03. Application & Logic Layer",
+        badge: "Application Security",
+        summary: "Business logic and API request processing handling user inputs and workflows.",
+        controls: [
+          "Strict server-side input validation and parameter type checking",
+          "OWASP Top 10 mitigation: SQL injection, broken authentication defense",
+          "Cryptographic token signing (HMAC-SHA256) and ephemeral session expiry",
+          "Centralized structured logging with security event auditing"
+        ]
+      },
+      {
+        id: "governance",
+        name: "04. Governance & Zero Trust",
+        badge: "Risk & IAM",
+        summary: "Access decision policies and organizational control enforcement.",
+        controls: [
+          "Principle of Least Privilege (PoLP) across all service accounts",
+          "Continuous verification: explicit trust validation on every transaction",
+          "NIST CSF alignment across Governance, Protection, and Detection functions",
+          "ISO/IEC 27001 Access Control and Cryptography compliance standards"
+        ]
+      },
+      {
+        id: "infrastructure",
+        name: "05. Infrastructure & Data Layer",
+        badge: "Host & Storage",
+        summary: "Underlying virtualized containers, databases, and sovereign data repositories.",
+        controls: [
+          "Encryption at rest (AES-256) for databases and persistent volumes",
+          "Network micro-segmentation and strict firewall egress rules",
+          "Reference: Hardened Linux kernel baseline with disabled root SSH",
+          "Automated vulnerability patch management and configuration drift audits"
+        ]
+      }
+    ]
+  },
+
+  // Security Lab / Technical Area
+  securityLab: {
+    title: "Cybersecurity Technical Lab",
+    subtitle: "Interactive security reference demonstrating layered web security controls and defensive architecture concepts.",
+    tools: [
+      {
+        id: "header-audit",
+        title: "HTTP Security Header Configuration",
+        type: "Live Portfolio Server Implementation",
+        description: "Critical defense-in-depth headers actively served on this domain across all application responses.",
+        headers: [
+          { name: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; ...", status: "Active & Enforced", role: "Restricts script execution to origin; mitigates XSS and data exfiltration" },
+          { name: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload", status: "Active & Enforced", role: "Enforces HTTPS connections and helps prevent protocol downgrade and insecure HTTP access" },
+          { name: "X-Content-Type-Options", value: "nosniff", status: "Active & Enforced", role: "Blocks MIME type sniffing attacks across all static and dynamic assets" },
+          { name: "Clickjacking Protection", value: "CSP frame-ancestors defined", status: "Active & Enforced", role: "Protects against framing and UI redressing via CSP frame-ancestors directive" },
+          { name: "Referrer-Policy", value: "strict-origin-when-cross-origin", status: "Active & Enforced", role: "Shields sensitive query paths from external referrers" },
+          { name: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()", status: "Active & Enforced", role: "Restricts browser hardware sensor and feature access" }
+        ]
+      },
+      {
+        id: "stride-matrix",
+        title: "STRIDE Threat Modeling Matrix",
+        type: "Conceptual Model",
+        description: "Deconstruct security properties against STRIDE threat vectors with recommended architectural countermeasures.",
+        threats: [
+          { letter: "S", threat: "Spoofing Identity", property: "Authentication", countermeasure: "Enforce multi-factor authentication (MFA), cryptographic sessions, and signed tokens." },
+          { letter: "T", threat: "Tampering with Data", property: "Integrity", countermeasure: "Use cryptographic hashes (SHA-256), TLS 1.3 encryption, and digital signatures." },
+          { letter: "R", threat: "Repudiation", property: "Non-repudiation", countermeasure: "Maintain tamper-evident audit logs with synchronized NTP timestamps and secure storage." },
+          { letter: "I", threat: "Information Disclosure", property: "Confidentiality", countermeasure: "Apply AES-256 data encryption at rest, sanitize error responses, and enforce strict CORS." },
+          { letter: "D", threat: "Denial of Service", property: "Availability", countermeasure: "Implement rate limiting, ingress filtering, resource quotas, and redundant infrastructure." },
+          { letter: "E", threat: "Elevation of Privilege", property: "Authorization", countermeasure: "Strict Role-Based Access Control (RBAC), least privilege policies, and input validation." }
+        ]
+      },
+      {
+        id: "zero-trust",
+        title: "Zero-Trust Architecture Guidelines",
+        type: "Architecture Reference",
+        description: "Core verification principles guiding modern defense-in-depth security postures and architectural design.",
+        principles: [
+          { title: "Verify Explicitly", detail: "Always authenticate and authorize based on all available data points (user identity, location, device health, service or workload)." },
+          { title: "Use Least-Privileged Access", detail: "Limit user access with Just-In-Time and Just-Enough-Access (JIT/JEA), risk-based adaptive policies, and data protection." },
+          { title: "Assume Breach", detail: "Minimize blast radius by segmenting access by network, user, devices, and application awareness. Encrypt all sessions end-to-end." }
+        ]
+      }
+    ]
+  },
+
+  // Verified GitHub Fallback
+  githubFallback: {
+    username: "jatinsingh82",
+    profileUrl: "https://github.com/jatinsingh82",
+    publicRepos: [
+      {
+        name: "Rajdeep-Enterprises",
+        description: "Commercial digital web portal engineered with responsive architecture, clean semantics, and high performance.",
+        language: "HTML / CSS / JavaScript",
+        url: "https://github.com/jatinsingh82/Rajdeep-Enterprises",
+        stars: 0,
+        forks: 0,
+        topics: ["frontend", "commercial-web", "performance", "responsive"]
+      },
+      {
+        name: "jatinsingh82.github.io",
+        description: "Official portfolio of Jatin Singh — Cybersecurity Analyst specializing in Cyber Strategy & Transformation.",
+        language: "JavaScript / CSS / Three.js",
+        url: "https://github.com/jatinsingh82/jatinsingh82.github.io",
+        stars: 0,
+        forks: 0,
+        topics: ["cybersecurity", "portfolio", "cyber-strategy", "threat-modeling"]
+      }
+    ]
+  }
+};

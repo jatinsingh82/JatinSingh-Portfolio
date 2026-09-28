@@ -195,8 +195,14 @@
   const header = document.querySelector('.site-header');
   const progressBar = document.getElementById('scroll-progress');
 
+  let cachedDocHeight = 1;
+  function updateScrollMetrics() {
+    cachedDocHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+  }
+
   function handleScroll() {
     const scrollY = window.scrollY || window.pageYOffset;
+
     if (header) {
       if (scrollY > 40) {
         header.classList.add('scrolled');
@@ -208,15 +214,11 @@
     }
 
     if (progressBar) {
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? (scrollY / docHeight) * 100 : 0;
+      const progress = Math.min(Math.max((scrollY / cachedDocHeight) * 100, 0), 100);
       progressBar.style.width = `${progress}%`;
       progressBar.setAttribute('aria-valuenow', Math.round(progress));
     }
   }
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll();
 
   // ==========================================================================
   // 3. NAVIGATION SPY (Active Section Highlighting)
@@ -227,7 +229,8 @@
   function updateActiveNav() {
     const scrollY = (window.scrollY || window.pageYOffset) + 160;
 
-    sections.forEach((current) => {
+    for (let i = 0; i < sections.length; i++) {
+      const current = sections[i];
       const sectionHeight = current.offsetHeight;
       const sectionTop = current.offsetTop;
       const sectionId = current.getAttribute('id');
@@ -240,11 +243,28 @@
             link.classList.remove('active');
           }
         });
+        break;
       }
-    });
+    }
   }
 
-  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  // Unified throttled scroll dispatcher to eliminate layout thrashing
+  let isScrollTicking = false;
+  function onScrollTick() {
+    if (!isScrollTicking) {
+      isScrollTicking = true;
+      requestAnimationFrame(() => {
+        handleScroll();
+        updateActiveNav();
+        isScrollTicking = false;
+      });
+    }
+  }
+
+  window.addEventListener('scroll', onScrollTick, { passive: true });
+  window.addEventListener('resize', updateScrollMetrics, { passive: true });
+  updateScrollMetrics();
+  handleScroll();
   updateActiveNav();
 
   // ==========================================================================
@@ -761,13 +781,30 @@
   }
 
   // ==========================================================================
-  // 11. PUBLIC GITHUB INTEGRATION (Graceful Offline Fallback)
+  // 11. PUBLIC GITHUB INTEGRATION (Graceful Offline Fallback & Session Caching)
   // ==========================================================================
+  const GITHUB_CACHE_KEY = 'jatin_github_repos_v1';
+  const GITHUB_CACHE_TTL = 30 * 60 * 1000; // 30 minutes cache
+
   async function initGithubShowcase() {
     const container = document.getElementById('github-showcase-container');
     if (!container) return;
 
     const fallback = data.githubFallback?.publicRepos || [];
+
+    // Check cached session data first to prevent rate limiting and eliminate network latency
+    try {
+      const rawCache = sessionStorage.getItem(GITHUB_CACHE_KEY);
+      if (rawCache) {
+        const parsed = JSON.parse(rawCache);
+        if (parsed && parsed.timestamp && Date.now() - parsed.timestamp < GITHUB_CACHE_TTL && Array.isArray(parsed.repos)) {
+          renderRepos(parsed.repos);
+          return;
+        }
+      }
+    } catch {
+      // Storage unavailable or restricted
+    }
 
     try {
       const response = await fetch('https://api.github.com/users/jatinsingh82/repos?sort=updated&per_page=4', {
@@ -779,17 +816,29 @@
       const repos = await response.json();
       if (!Array.isArray(repos) || repos.length === 0) throw new Error('No repos returned');
 
-      renderRepos(
-        repos.map((r) => ({
-          name: r.name,
-          description: r.description || 'Public engineering repository.',
-          language: r.language || 'Codebase',
-          url: r.html_url,
-          stars: r.stargazers_count,
-          forks: r.forks_count,
-          topics: r.topics || []
-        }))
-      );
+      const mappedRepos = repos.map((r) => ({
+        name: r.name,
+        description: r.description || 'Public engineering repository.',
+        language: r.language || 'Codebase',
+        url: r.html_url,
+        stars: r.stargazers_count,
+        forks: r.forks_count,
+        topics: r.topics || []
+      }));
+
+      try {
+        sessionStorage.setItem(
+          GITHUB_CACHE_KEY,
+          JSON.stringify({
+            timestamp: Date.now(),
+            repos: mappedRepos
+          })
+        );
+      } catch {
+        // Ignore session storage errors
+      }
+
+      renderRepos(mappedRepos);
     } catch {
       // Graceful offline fallback
       renderRepos(fallback);
@@ -1143,6 +1192,35 @@ GitHub: https://github.com/jatinsingh82`;
     let mouseY = -100;
     let ringX = -100;
     let ringY = -100;
+    let isRingLoopActive = false;
+
+    function renderRing() {
+      if (document.hidden) {
+        isRingLoopActive = false;
+        return;
+      }
+
+      const dx = mouseX - ringX;
+      const dy = mouseY - ringY;
+
+      ringX += dx * 0.18;
+      ringY += dy * 0.18;
+      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
+
+      // Sleep loop once ring has caught up with cursor to save CPU cycles
+      if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+        requestAnimationFrame(renderRing);
+      } else {
+        isRingLoopActive = false;
+      }
+    }
+
+    function wakeRingLoop() {
+      if (!isRingLoopActive && !document.hidden) {
+        isRingLoopActive = true;
+        requestAnimationFrame(renderRing);
+      }
+    }
 
     window.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
@@ -1150,15 +1228,14 @@ GitHub: https://github.com/jatinsingh82`;
       dot.style.opacity = '1';
       ring.style.opacity = '1';
       dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+      wakeRingLoop();
     }, { passive: true });
 
-    function renderRing() {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
-      requestAnimationFrame(renderRing);
-    }
-    renderRing();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isRingLoopActive = false;
+      }
+    });
 
     const hoverSelectors = 'a, button, .interactive-node, .skill-card, .cert-card, .arch-node-card, input, [role="button"]';
     document.addEventListener('mouseover', (e) => {

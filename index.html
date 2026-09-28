@@ -46,6 +46,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <!-- Preload Critical Above-The-Fold Hero Image for LCP Optimization -->
+  <link rel="preload" as="image" href="src/assets/images/hero_cinematic_cyber_1790183652456.avif" type="image/avif" fetchpriority="high">
+
   <!-- Core Stylesheet -->
   <link rel="stylesheet" href="assets/css/main.css">
 
@@ -625,21 +628,21 @@
             <span class="project-category">Commercial Web Platform &amp; Architecture</span>
             <h3 class="featured-project-title">Rajdeep Enterprises Digital Platform</h3>
             <p class="featured-project-desc">
-              High-performance digital platform engineered for Rajdeep Enterprises, delivering sub-second load times, hardened client-side validation, and accessible responsive pathways.
+              Commercial digital platform engineered for Rajdeep Enterprises, delivering hardened client-side validation, semantic markup, and accessible responsive pathways.
             </p>
 
             <div class="featured-project-stats">
               <div class="stat-item">
-                <span class="stat-value">&lt; 1s</span>
-                <span class="stat-label">FIRST PAINT</span>
+                <span class="stat-value">Multi-Device</span>
+                <span class="stat-label">RESPONSIVE UX</span>
               </div>
               <div class="stat-item">
-                <span class="stat-value">100%</span>
-                <span class="stat-label">RESPONSIVE</span>
+                <span class="stat-value">Semantic</span>
+                <span class="stat-label">ACCESSIBLE HTML</span>
               </div>
               <div class="stat-item">
-                <span class="stat-value">Zero</span>
-                <span class="stat-label">RUNTIME DEPS</span>
+                <span class="stat-value">Client-Side</span>
+                <span class="stat-label">SECURITY CONTROLS</span>
               </div>
             </div>
 
@@ -1192,10 +1195,10 @@
   </footer>
 
   <!-- Scripts: Configuration, Cinematic Engine, Data, and Core Logic -->
-  <script src="assets/js/cinematic-config.js"></script>
-  <script src="assets/js/cinematic-engine.js"></script>
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/cinematic-config.js" defer></script>
+  <script src="assets/js/cinematic-engine.js" defer></script>
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
   <script type="module" src="assets/js/interactive-3d-background.js"></script>
 </body>
 </html>

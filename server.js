@@ -61,8 +61,25 @@ app.use((req, res, next) => {
 // Ensure AVIF MIME type is correctly recognized
 express.static.mime.define({ 'image/avif': ['avif'] });
 
-// Serve public static assets with dotfiles protected
-app.use(express.static(ROOT, { dotfiles: 'ignore' }));
+// Serve public static assets with dotfiles protected and optimized caching policies
+app.use(
+  express.static(ROOT, {
+    dotfiles: 'ignore',
+    setHeaders: (res, filePath) => {
+      // Long-term immutable caching for images, icons, and vendor modules
+      if (
+        filePath.match(/\.(avif|webp|jpe?g|png|svg|ico)$/i) ||
+        filePath.includes('/assets/js/vendor/')
+      ) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      } else if (filePath.match(/\.(css|js)$/i)) {
+        res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+      } else if (filePath.match(/\.(html)$/i)) {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+    }
+  })
+);
 
 // Explicit resume routes
 app.get(['/resume', '/resume/', '/resume.html', '/download-resume'], (req, res) => {

@@ -222,20 +222,20 @@ window.PORTFOLIO_DATA = {
       category: "web",
       categoryLabel: "Web Platform & Client Architecture",
       isFeatured: true,
-      summary: "Commercial web platform engineered for Rajdeep Enterprises, delivering a streamlined, highly responsive digital brand presence with rapid load times and accessible user pathways.",
-      problem: "Rajdeep Enterprises required a modern digital presence capable of showcasing offerings cleanly across desktop, tablet, and mobile with instantaneous responsiveness, zero framework bloat, and hardened client-side validation.",
-      solution: "Engineered a lightweight, single-tier client architecture using semantic HTML5, CSS3, and modular vanilla JavaScript. Designed zero-overhead UI components with sub-second First Contentful Paint and rigorous accessibility.",
+      summary: "Commercial web platform engineered for Rajdeep Enterprises, delivering a streamlined, highly responsive digital brand presence with accessible user pathways.",
+      problem: "Rajdeep Enterprises required a modern digital presence capable of showcasing offerings cleanly across desktop, tablet, and mobile with fluid responsiveness, zero framework overhead, and hardened client-side validation.",
+      solution: "Engineered a lightweight, single-tier client architecture using semantic HTML5, CSS3, and modular vanilla JavaScript. Designed zero-dependency UI components with semantic markup and rigorous accessibility.",
       architectureDescription: "Client-side responsive architecture with high-compression asset distribution, semantic document tree, and hardened input sanitization.",
       architectureSteps: [
         { label: "USER / CLIENT", desc: "Accesses digital portal over HTTPS on any mobile, tablet, or desktop browser." },
-        { label: "PRESENTATION LAYER", desc: "Zero-bloat semantic HTML5 and CSS3 Grid/Flexbox with hardware acceleration." },
+        { label: "PRESENTATION LAYER", desc: "Clean semantic HTML5 and CSS3 Grid/Flexbox with hardware acceleration." },
         { label: "CLIENT SECURITY", desc: "Hardened form validation, input sanitization, and strict rel='noopener noreferrer' outbound controls." },
-        { label: "ASSET DELIVERY", desc: "Sub-second first contentful paint with optimized modern image compression." }
+        { label: "ASSET DELIVERY", desc: "Optimized modern asset delivery with high-efficiency AVIF and WebP compression." }
       ],
-      technologies: ["HTML5", "CSS3", "JavaScript", "Responsive Design", "Performance Optimization"],
+      technologies: ["HTML5", "CSS3", "JavaScript", "Responsive Design", "Security Hardening"],
       myContribution: "Sole Frontend Engineer: designed responsive system layout, implemented client-side interactivity, and optimized for speed, security, and accessibility.",
       implementation: "Built completely from the ground up using clean semantic markup and modern CSS variables for theme consistency without relying on heavy third-party JavaScript runtimes.",
-      result: "Achieved sub-second page loads, zero runtime security vulnerabilities, full mobile responsiveness, and a polished brand representation for commercial stakeholders.",
+      result: "Delivered a fast, fully responsive web application with clean semantic structure, robust client-side validation, and polished commercial brand representation.",
       image: "src/assets/images/project_rajdeep_preview_1790182635150.webp",
       github: "https://github.com/jatinsingh82/Rajdeep-Enterprises",
       liveDemo: "https://github.com/jatinsingh82/Rajdeep-Enterprises"

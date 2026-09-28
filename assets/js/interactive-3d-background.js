@@ -50,6 +50,7 @@ class Interactive3DBackground {
       targetY: 0,
       progress: 0
     };
+    this.cachedMaxScroll = 0;
 
     // 6. Animation Lifecycle Flags
     this.isPaused = false;
@@ -555,10 +556,12 @@ class Interactive3DBackground {
 
   onWindowScroll() {
     const scrollY = window.scrollY || window.pageYOffset || 0;
-    const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    if (!this.cachedMaxScroll || this.cachedMaxScroll <= 1) {
+      this.cachedMaxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    }
     
     this.scroll.targetY = scrollY;
-    this.scroll.progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+    this.scroll.progress = Math.min(Math.max(scrollY / this.cachedMaxScroll, 0), 1);
 
     // If reduced motion is active, do a single throttled render pass so sphere stays aligned with section scroll
     if (this.isReducedMotion) {
@@ -584,6 +587,9 @@ class Interactive3DBackground {
 
       const width = window.innerWidth;
       const height = window.innerHeight;
+
+      // Update cached scroll range upon viewport geometry change
+      this.cachedMaxScroll = Math.max(document.documentElement.scrollHeight - height, 1);
 
       // Re-evaluate profile upon major orientation or viewport shifts
       const newProfile = this.detectDeviceProfile();
